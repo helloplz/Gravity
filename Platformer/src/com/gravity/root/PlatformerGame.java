@@ -1,4 +1,4 @@
-package com.mazebuilder.root;
+package com.gravity.root;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
