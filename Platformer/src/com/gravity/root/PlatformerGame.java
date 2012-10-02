@@ -4,7 +4,6 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.tiled.TiledMap;
 
 /**
  * 
@@ -18,6 +17,7 @@ public class PlatformerGame extends StateBasedGame {
 
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
+		addState(new GameplayState());
 	}
 
 	public static void main(String args[]) throws SlickException {
@@ -28,8 +28,6 @@ public class PlatformerGame extends StateBasedGame {
 		app.setMinimumLogicUpdateInterval(10);
 		app.setTargetFrameRate(60);
 		// app.setSmoothDeltas(true);
-
-		new TiledMap("thing").render(1, 1);
 
 		app.start();
 
