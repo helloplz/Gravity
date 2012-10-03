@@ -8,14 +8,14 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import com.gravity.physics.Entity;
 
-public class TileMap implements GameMap {
+public class TileWorld implements GameWorld {
 
 	Tile[][] terrain;
 
 	int height;
 	int width;
 
-	public TileMap(TiledMap map) {
+	public TileWorld(TiledMap map) {
 		// Get width/height
 		this.width = new Integer(map.getMapProperty("width", "1024"));
 		this.height = new Integer(map.getMapProperty("height", "1024"));

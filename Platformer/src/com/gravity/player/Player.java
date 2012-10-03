@@ -3,7 +3,7 @@ package com.gravity.player;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-import com.gravity.map.GameMap;
+import com.gravity.map.GameWorld;
 import com.gravity.physics.Entity;
 
 public abstract class Player implements Entity {
@@ -12,14 +12,14 @@ public abstract class Player implements Entity {
 	private float moveSpeed = 3;
 	private float maxHealth = 10;
 
-	private GameMap map;
+	private GameWorld map;
 
 	private Vector2f position;
 	private Vector2f velocity;
 	private Vector2f normal;
 	private float health;
 
-	public Player(GameMap map) {
+	public Player(GameWorld map) {
 		health = maxHealth;
 		velocity = new Vector2f(0, 0);
 		this.map = map;

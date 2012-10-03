@@ -11,12 +11,12 @@ import com.gravity.physics.Entity;
  * 
  * @author xiao
  */
-public class TileMapEntity implements Entity {
+public class TileWorldEntity implements Entity {
 
 	private Shape position;
-	private TileMap map;
+	private TileWorld map;
 
-	public TileMapEntity(Shape shape, TileMap map) {
+	public TileWorldEntity(Shape shape, TileWorld map) {
 		this.position = shape;
 		this.map = map;
 	}

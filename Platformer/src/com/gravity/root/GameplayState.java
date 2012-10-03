@@ -7,8 +7,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.gravity.gameplay.GravityGameController;
-import com.gravity.map.TileMap;
-import com.gravity.map.TileMapRenderer;
+import com.gravity.map.TileWorld;
+import com.gravity.map.TileWorldRenderer;
 import com.gravity.player.Player;
 import com.gravity.player.PlayerRenderer;
 
@@ -20,9 +20,9 @@ public class GameplayState extends BasicGameState implements
 		return 1;
 	}
 
-	private TileMap map;
+	private TileWorld map;
 	private Player playerA, playerB;
-	private TileMapRenderer rendererMap;
+	private TileWorldRenderer rendererMap;
 	private PlayerRenderer rendererA, rendererB;
 
 	@Override

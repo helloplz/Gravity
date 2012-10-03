@@ -6,7 +6,7 @@ import org.newdawn.slick.geom.Shape;
 
 import com.gravity.physics.Entity;
 
-public interface GameMap {
+public interface GameWorld {
 
 	/**
 	 * Returns the set of collisions between the given shape and the map

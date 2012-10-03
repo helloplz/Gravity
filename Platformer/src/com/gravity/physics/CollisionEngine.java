@@ -3,15 +3,15 @@ package com.gravity.physics;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.gravity.map.GameMap;
+import com.gravity.map.GameWorld;
 
 public class CollisionEngine {
 
-	private GameMap gameMap;
+	private GameWorld gameMap;
 	private List<Entity> entities;
 	private List<Entity> terrain;
 
-	public CollisionEngine(GameMap map) {
+	public CollisionEngine(GameWorld map) {
 		gameMap = map;
 		entities = Lists.newArrayList();
 		terrain = map.getTerrainEntities();
