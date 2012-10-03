@@ -5,14 +5,16 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.gravity.map.GameMap;
 
-public class PhysicsEngine {
+public class CollisionEngine {
 
 	private GameMap gameMap;
 	private List<Entity> entities;
+	private List<Entity> terrain;
 
-	public PhysicsEngine(GameMap map) {
+	public CollisionEngine(GameMap map) {
 		gameMap = map;
 		entities = Lists.newArrayList();
+		terrain = map.getTerrainEntities();
 	}
 
 	public boolean addEntity(Entity entity) {

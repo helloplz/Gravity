@@ -6,6 +6,8 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
+import com.gravity.physics.Entity;
+
 public class TileMap implements GameMap {
 
 	Tile[][] terrain;
@@ -64,5 +66,11 @@ public class TileMap implements GameMap {
 	@Override
 	public int getWidth() {
 		return width;
+	}
+
+	@Override
+	public List<Entity> getTerrainEntities() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

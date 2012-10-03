@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.newdawn.slick.geom.Shape;
 
+import com.gravity.physics.Entity;
+
 public interface GameMap {
 
 	/**
@@ -18,7 +20,9 @@ public interface GameMap {
 	/** Get the height of this map, in tiles */
 	public int getHeight();
 
-	/** Get the width of this map, in tiles*/
+	/** Get the width of this map, in tiles */
 	public int getWidth();
 
+	/** Return a list of entities for use in collision detection */
+	public List<Entity> getTerrainEntities();
 }

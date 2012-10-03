@@ -36,15 +36,15 @@ public interface Entity {
 	 * @return the new position of the object at the full time, as specified by
 	 *         ticks
 	 */
-	public Shape handleCollision(Collision collision, float ticks);
+	public Shape handleCollisions(float ticks, Collision... collisions);
 
 	/**
-	 * Same as {@link Entity#handleCollision(Collision, float)}, but may not
+	 * Same as {@link Entity#handleCollisions(Collision, float)}, but may not
 	 * change player's game state (health, etc) - useful for when
 	 * handleCollision proposes a new posision which creates new collision
 	 * problems.
 	 */
-	public Shape rehandleCollision(Collision collision, float ticks);
+	public Shape rehandleCollisions(float ticks, Collision... collisions);
 
 	/** Advance the entity a certain amount in time. */
 	public void tick(float ticks);
