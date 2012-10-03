@@ -3,10 +3,9 @@ package com.gravity.map;
 import java.util.Map;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Vector2f;
 
 import com.google.common.collect.Maps;
-import com.gravity.player.Entity;
+import com.gravity.physics.Entity;
 import com.gravity.root.Renderer;
 
 public class TileMapRenderer implements Renderer {
@@ -29,15 +28,14 @@ public class TileMapRenderer implements Renderer {
 				// TODO: for each tile, render the image in the appropriate area
 			}
 		}
-		for (Entity entity : tileMap.entities) {
-			Vector2f position = tileMap.positions.get(entity);
-			g.pushTransform();
-			g.translate(position.getX(), position.getY());
-
-			entityRenderers.get(entity).render(g);
-
-			g.resetTransform();
-			g.popTransform();
-		}
+		/*
+		 * TODO: move this to GameEngin for (Entity entity : tileMap.entities) {
+		 * Vector2f position = entity.getPosition(); g.pushTransform();
+		 * g.translate(position.getX(), position.getY());
+		 * 
+		 * entityRenderers.get(entity).render(g);
+		 * 
+		 * g.resetTransform(); g.popTransform(); }
+		 */
 	}
 }

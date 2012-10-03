@@ -1,19 +1,28 @@
 package com.gravity.player;
 
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-public class HumanPlayer implements Entity {
+import com.gravity.map.GameMap;
+import com.gravity.physics.Entity;
+
+public abstract class Player implements Entity {
 
 	private float jumpPower = 5;
 	private float moveSpeed = 3;
 	private float maxHealth = 10;
 
+	private GameMap map;
+
+	private Vector2f position;
 	private Vector2f velocity;
+	private Vector2f normal;
 	private float health;
 
-	public HumanPlayer() {
+	public Player(GameMap map) {
 		health = maxHealth;
 		velocity = new Vector2f(0, 0);
+		this.map = map;
 	}
 
 	public void takeDamage(float damage) {
@@ -53,9 +62,7 @@ public class HumanPlayer implements Entity {
 	}
 
 	@Override
-	public Vector2f update() {
-		Vector2f retval = new Vector2f(velocity);
-		velocity.set(velocity.getX(), 0);
-		return retval;
+	public Shape getPosition(float ticks) {
+		return null;
 	}
 }
