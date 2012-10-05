@@ -22,9 +22,9 @@ public class Player implements Entity {
 
 	// PLAYER STARTING CONSTANTS
 	private final float JUMP_POWER = 5;
-	private final float MOVEMENT_INCREMENT = 10.0f / 1000f;
+	private final float MOVEMENT_INCREMENT = 10000.0f / 1000f;
 	private float MAX_HEALTH = 10;
-	private float MAX_VEL = 2f / 1000f;
+	private float MAX_VEL = 200f / 1000f;
 	private float VEL_DAMP = 0.5f;
 	private float GRAVITY = 1.0f / 1000f;
 
