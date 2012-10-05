@@ -120,10 +120,9 @@ public class Player implements Entity {
 		handleMotion(millis);
 	}
 
-	/*
-	 * Makes sure maximum velocities are respected, player position is updated,
-	 * etc
-	 */
+    /**
+     * Makes sure maximum velocities are respected, player position is updated, etc
+     */
 	public void handleMotion(float millis) {
 		oldPosition = newPosition;
 		// Check to see if the player is on the ground
