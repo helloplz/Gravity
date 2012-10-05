@@ -10,6 +10,10 @@ import com.gravity.physics.Entity;
 
 public class Player implements Entity {
 
+	public enum Movement {
+		LEFT, RIGHT, STOP
+	}
+
 	private GravityGameController game;
 
 	private float jumpPower = 5;
@@ -38,24 +42,24 @@ public class Player implements Entity {
 		health += heal;
 	}
 
-	public void jump() {
+	/**
+	 * @param jumping
+	 *            true if keydown, false if keyup
+	 */
+	public void jump(boolean jumping) {
 		velocity.add(new Vector2f(0, jumpPower));
+	}
+
+	/**
+	 * 
+	 * @param direction
+	 */
+	public void move(Movement direction) {
+
 	}
 
 	public void land() {
 		velocity.set(velocity.getX(), 0);
-	}
-
-	public void moveLeft() {
-		velocity.set(-moveSpeed, velocity.getY());
-	}
-
-	public void moveRight() {
-		velocity.set(moveSpeed, velocity.getY());
-	}
-
-	public void stopMove() {
-		velocity.set(0, velocity.getY());
 	}
 
 	public float jumpPower() {

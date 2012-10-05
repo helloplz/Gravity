@@ -23,9 +23,9 @@ public class GameplayState extends BasicGameState implements
 	}
 
 	private TileWorld map;
-	private Player player;
+	private Player playerA, playerB;
 	private TileWorldRenderer rendererMap;
-	private PlayerRenderer rendererA;
+	private PlayerRenderer rendererA, rendererB;
 	private PlayerKeyboardController controllerA, controllerB;
 
 	@Override
@@ -36,11 +36,13 @@ public class GameplayState extends BasicGameState implements
 
 	public void resetState() throws SlickException {
 		map = new TileWorld(new TiledMap("assets/testmap.tmx"));
-		player = new Player(map, this);
+		playerA = new Player(map, this);
+		playerB = new Player(map, this);
 		rendererMap = new TileWorldRenderer(map);
-		rendererA = new PlayerRenderer(player);
-		controllerA = new PlayerKeyboardController(player);
-		controllerB = new PlayerKeyboardController(player);
+		rendererA = new PlayerRenderer(playerA);
+		rendererB = new PlayerRenderer(playerB);
+		controllerA = new PlayerKeyboardController(playerA);
+		controllerB = new PlayerKeyboardController(playerB);
 	}
 
 	@Override
@@ -55,6 +57,16 @@ public class GameplayState extends BasicGameState implements
 			throws SlickException {
 		// TODO update on CollisionEngine and other players
 
+	}
+
+	@Override
+	public void keyPressed(int key, char c) {
+		System.out.println("Key pressed: " + key + " " + c);
+	}
+
+	@Override
+	public void keyReleased(int key, char c) {
+		System.out.println("Key released: " + key + " " + c);
 	}
 
 	@Override
