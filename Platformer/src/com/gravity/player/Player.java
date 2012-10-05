@@ -115,26 +115,29 @@ public class Player implements Entity {
     
     @Override
     public void tick(int millis) {
+        position = position.add(velocity);
         handleMotion(millis);
     }
     
-    /*
+    /**
      * Makes sure maximum velocities are respected, player position is updated, etc
      */
-    public void handleMotion(float millis) {
+    private void handleMotion(int millis) {
         // Check to see if the player is on the ground
         isOnGround();
+        
         // Change the velocity depending on the accelerations
         velocity.add(acceleration);
         // Makes sure velocity does not exceed max velocity
-        if (velocity.length() > MAX_VEL * millis)
+        if (velocity.length() > MAX_VEL * millis) {
             velocity = velocity.scale(velocity.length() * millis / MAX_VEL);
+        }
     }
     
-    /*
+    /**
      * Sets onGround depending on if the player is on the ground or not
      */
-    public void isOnGround() {
+    private void isOnGround() {
         // TODO
     }
 }

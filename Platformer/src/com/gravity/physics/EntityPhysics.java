@@ -27,4 +27,14 @@ public class EntityPhysics {
         return new Vector2f(x, y);
     }
     
+    public static Vector2f postCollisionVelocity(Shape collider, Shape obstacle, Vector2f velocity, Vector2f collisionPoint) {
+        Vector2f point = collisionPoint.copy();
+        point.x -= obstacle.getCenterX();
+        point.y -= obstacle.getCenterY();
+        Vector2f normal = point.getNormal().normalise();
+        if (normal.dot(velocity) < 0) {
+            normal.scale(-1);
+        }
+        return normal.scale(velocity.length());
+    }
 }
