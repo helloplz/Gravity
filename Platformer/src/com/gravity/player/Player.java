@@ -27,6 +27,7 @@ public class Player implements Entity {
 	private float MAX_VEL = 200f / 1000f;
 	private float VEL_DAMP = 0.5f;
 	private float GRAVITY = 1.0f / 1000f;
+	
 
 	// PLAYER CURRENT VALUES
 	private GameWorld map;
@@ -39,6 +40,7 @@ public class Player implements Entity {
 	private Vector2f facing = new Vector2f(0, 1);
 	private float health;
 	private Shape myShape;
+	private float starty;
 
 	// GAME STATE STUFF
 	private boolean onGround = true;
@@ -65,10 +67,18 @@ public class Player implements Entity {
 	 */
 	public void jump(boolean jumping) {
 		if (onGround) {
+			starty = oldPosition.y;
 			onGround = false;
-			velocity.y += JUMP_POWER;
+			velocity.y -= JUMP_POWER;
 		} else {
-			acceleration.y = -(GRAVITY);
+			if (newPosition.y < starty){
+				acceleration.y = (GRAVITY);
+			}
+			else {
+				onGround = true;
+				velocity.y = 0;
+				acceleration.y = 0;
+			}
 		}
 	}
 
