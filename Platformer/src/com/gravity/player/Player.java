@@ -16,19 +16,21 @@ public class Player implements Entity {
 
 	private GravityGameController game;
 
-	private float jumpPower = 5;
-	private float moveSpeed = 3;
-	private float maxHealth = 10;
+	// PLAYER STARTING CONSTANTS
+	private final float JUMP_POWER = 5;
+	private final float MOVEMENT_INCREMENT = 3;
+	private float MAX_HEALTH = 10;
 
+	// PLAYER CURRENT VALUES
 	private GameWorld map;
 
 	private Vector2f position;
 	private Vector2f velocity;
-	private Vector2f normal;
+	private Vector2f facing;
 	private float health;
 
 	public Player(GameWorld map, GravityGameController game) {
-		health = maxHealth;
+		health = MAX_HEALTH;
 		velocity = new Vector2f(0, 0);
 		this.map = map;
 		this.game = game;
@@ -47,7 +49,6 @@ public class Player implements Entity {
 	 *            true if keydown, false if keyup
 	 */
 	public void jump(boolean jumping) {
-		velocity.add(new Vector2f(0, jumpPower));
 	}
 
 	/**
@@ -55,19 +56,14 @@ public class Player implements Entity {
 	 * @param direction
 	 */
 	public void move(Movement direction) {
-
-	}
-
-	public void land() {
-		velocity.set(velocity.getX(), 0);
 	}
 
 	public float jumpPower() {
-		return jumpPower;
+		return JUMP_POWER;
 	}
 
 	public float moveSpeed() {
-		return moveSpeed;
+		return MOVEMENT_INCREMENT;
 	}
 
 	@Override
