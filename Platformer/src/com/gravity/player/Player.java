@@ -3,10 +3,14 @@ package com.gravity.player;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.gravity.gameplay.GravityGameController;
 import com.gravity.map.GameWorld;
+import com.gravity.physics.Collision;
 import com.gravity.physics.Entity;
 
-public abstract class Player implements Entity {
+public class Player implements Entity {
+
+	private GravityGameController game;
 
 	// PLAYER STARTING CONSTANTS
 	private final float JUMP_POWER = 5;
@@ -21,10 +25,11 @@ public abstract class Player implements Entity {
 	private Vector2f facing;
 	private float health;
 
-	public Player(GameWorld map) {
+	public Player(GameWorld map, GravityGameController game) {
 		health = MAX_HEALTH;
 		velocity = new Vector2f(0, 0);
 		this.map = map;
+		this.game = game;
 	}
 
 	public void takeDamage(float damage) {
@@ -66,5 +71,29 @@ public abstract class Player implements Entity {
 	@Override
 	public Shape getPosition(float ticks) {
 		return null;
+	}
+
+	@Override
+	public Vector2f getVelocity(float ticks) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Shape handleCollisions(float ticks, Collision... collisions) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Shape rehandleCollisions(float ticks, Collision... collisions) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void tick(float ticks) {
+		// TODO Auto-generated method stub
+
 	}
 }

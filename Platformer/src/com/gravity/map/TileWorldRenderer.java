@@ -1,20 +1,15 @@
 package com.gravity.map;
 
-import java.util.Map;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
-import com.gravity.physics.Entity;
 import com.gravity.root.Renderer;
 
 public class TileWorldRenderer implements Renderer {
 	private TileWorld tileMap;
-	private Map<Entity, Renderer> entityRenderers;
 
-	public TileWorldRenderer(TileWorld tileMap, Map<Entity, Renderer> eAndR) {
+	public TileWorldRenderer(TileWorld tileMap) {
 		this.tileMap = tileMap;
-		this.entityRenderers = eAndR;
 	}
 
 	@Override
