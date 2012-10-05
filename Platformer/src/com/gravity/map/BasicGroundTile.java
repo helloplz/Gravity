@@ -10,7 +10,7 @@ public class BasicGroundTile extends Tile {
     static private BasicGroundTile template;
     static {
         try {
-            template = new BasicGroundTile(new Image("assets/blank.png"));
+            template = new BasicGroundTile(new Image("assets/perspective_walls.png"));
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
