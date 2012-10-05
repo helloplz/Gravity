@@ -33,7 +33,7 @@ public class Player implements Entity {
 
 	// position and magnitude
 	private Vector2f acceleration = new Vector2f(0, 0);
-	private Vector2f oldPosition = new Vector2f(0, 0);
+	public Vector2f oldPosition = new Vector2f(0, 0);
 	private Vector2f newPosition = new Vector2f(0, 0);
 	private Vector2f velocity = new Vector2f(0, 0);
 	private Vector2f facing = new Vector2f(0, 1);
