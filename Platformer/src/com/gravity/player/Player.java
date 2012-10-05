@@ -14,6 +14,7 @@ import com.gravity.physics.Entity;
 
 public class Player implements Entity {
 
+
 	public enum Movement {
 		LEFT, RIGHT, STOP
 	}
@@ -202,4 +203,5 @@ public class Player implements Entity {
 	public void isOnGround() {
 		// TODO
 	}
+
 }
