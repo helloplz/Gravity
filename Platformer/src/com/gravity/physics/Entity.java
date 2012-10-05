@@ -16,7 +16,15 @@ public interface Entity {
 	 * @param ticks
 	 *            time since the last tick() call
 	 */
-	public Shape getPosition(float ticks);
+	public Vector2f getPosition(float ticks);
+
+	/**
+	 * Get the position of the Entity after specified time has passed
+	 * 
+	 * @param ticks
+	 *            time since the last tick() call
+	 */
+	public Shape getShape(float ticks);
 
 	/**
 	 * Get the velocity of the Entity at the specifed time
