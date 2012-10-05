@@ -87,7 +87,6 @@ public class Player implements Entity {
 	// Get where you WILL be in "ticks" time
 	@Override
 	public Vector2f getPosition(float ticks) {
-		// TODO
 		return newPosition;
 	}
 
