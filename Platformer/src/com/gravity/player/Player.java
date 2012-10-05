@@ -1,5 +1,7 @@
 package com.gravity.player;
 
+import java.util.List;
+
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -28,8 +30,7 @@ public class Player implements Entity {
     
     // position and magnitude
     private Vector2f              acceleration;
-    private Vector2f              oldPosition;
-    private Vector2f              newPosition;
+    private Vector2f              position;
     private Vector2f              velocity;
     private Vector2f              facing;
     private float                 health;
@@ -84,38 +85,36 @@ public class Player implements Entity {
         
     }
     
-    // Get where you WILL be in "ticks" time
     @Override
-    public Vector2f getPosition(float ticks) {
-        // TODO
-        return newPosition;
+    public Vector2f getPosition(int ticks) {
+        return position;
     }
     
     @Override
-    public Shape getShape(float ticks) {
+    public Shape getShape(int ticks) {
         // TODO
         return null;
     }
     
     @Override
-    public Vector2f getVelocity(float ticks) {
+    public Vector2f getVelocity(int ticks) {
         return velocity;
     }
     
     @Override
-    public Shape handleCollisions(float ticks, Collision... collisions) {
+    public Shape handleCollisions(int ticks, List<Collision> collisions) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public Shape rehandleCollisions(float ticks, Collision... collisions) {
+    public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public void tick(float millis) {
+    public void tick(int millis) {
         handleMotion(millis);
     }
     
@@ -123,7 +122,6 @@ public class Player implements Entity {
      * Makes sure maximum velocities are respected, player position is updated, etc
      */
     public void handleMotion(float millis) {
-        oldPosition = newPosition;
         // Check to see if the player is on the ground
         isOnGround();
         // Change the velocity depending on the accelerations
@@ -131,8 +129,6 @@ public class Player implements Entity {
         // Makes sure velocity does not exceed max velocity
         if (velocity.length() > MAX_VEL * millis)
             velocity = velocity.scale(velocity.length() * millis / MAX_VEL);
-        // Updates position to reflect velocity
-        newPosition = oldPosition.add(velocity);
     }
     
     /*
