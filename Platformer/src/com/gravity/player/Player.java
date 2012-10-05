@@ -14,6 +14,7 @@ import com.gravity.physics.Entity;
 
 public class Player implements Entity {
 
+
 	public enum Movement {
 		LEFT, RIGHT, STOP
 	}
@@ -22,23 +23,25 @@ public class Player implements Entity {
 
 	// PLAYER STARTING CONSTANTS
 	private final float JUMP_POWER = 5;
-	private final float MOVEMENT_INCREMENT = 10.0f / 1000f;
+	private final float MOVEMENT_INCREMENT = 10000.0f / 1000f;
 	private float MAX_HEALTH = 10;
-	private float MAX_VEL = 2f / 1000f;
+	private float MAX_VEL = 200f / 1000f;
 	private float VEL_DAMP = 0.5f;
 	private float GRAVITY = 1.0f / 1000f;
+	
 
 	// PLAYER CURRENT VALUES
 	private GameWorld map;
 
 	// position and magnitude
 	private Vector2f acceleration = new Vector2f(0, 0);
-	private Vector2f oldPosition = new Vector2f(0, 0);
+	public Vector2f oldPosition = new Vector2f(0, 0);
 	private Vector2f newPosition = new Vector2f(0, 0);
 	private Vector2f velocity = new Vector2f(0, 0);
 	private Vector2f facing = new Vector2f(0, 1);
 	private float health;
 	private Shape myShape;
+	private float starty;
 
 	// GAME STATE STUFF
 	private boolean onGround = true;
@@ -65,10 +68,18 @@ public class Player implements Entity {
 	 */
 	public void jump(boolean jumping) {
 		if (onGround) {
+			starty = oldPosition.y;
 			onGround = false;
-			velocity.y += JUMP_POWER;
+			velocity.y -= JUMP_POWER;
 		} else {
-			acceleration.y = -(GRAVITY);
+			if (newPosition.y < starty){
+				acceleration.y = (GRAVITY);
+			}
+			else {
+				onGround = true;
+				velocity.y = 0;
+				acceleration.y = 0;
+			}
 		}
 	}
 
@@ -192,4 +203,5 @@ public class Player implements Entity {
 	public void isOnGround() {
 		// TODO
 	}
+
 }
