@@ -1,5 +1,7 @@
 package com.gravity.physics;
 
+import java.util.List;
+
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -9,51 +11,48 @@ import org.newdawn.slick.geom.Vector2f;
  * @author xiao
  */
 public interface Entity {
-
-	/**
-	 * Get the position of the Entity after specified time has passed
-	 * 
-	 * @param ticks
-	 *            time since the last tick() call
-	 */
-	public Vector2f getPosition(float ticks);
-
-	/**
-	 * Get the position of the Entity after specified time has passed
-	 * 
-	 * @param ticks
-	 *            time since the last tick() call
-	 */
-	public Shape getShape(float ticks);
-
-	/**
-	 * Get the velocity of the Entity at the specifed time
-	 * 
-	 * @param ticks
-	 *            time since the last tick() call
-	 */
-	public Vector2f getVelocity(float ticks);
-
-	/**
-	 * Entity will collide with another entity - handle it.
-	 * 
-	 * @param collision
-	 *            an object containing info about the collision
-	 * @param ticks
-	 *            the length of this timestep
-	 * @return the new position of the object at the full time, as specified by
-	 *         ticks
-	 */
-	public Shape handleCollisions(float ticks, Collision... collisions);
-
-	/**
-	 * Same as {@link Entity#handleCollisions(Collision, float)}, but may not
-	 * change player's game state (health, etc) - useful for when
-	 * handleCollision proposes a new posision which creates new collision
-	 * problems.
-	 */
-	public Shape rehandleCollisions(float ticks, Collision... collisions);
-
-	/** Advance the entity a certain amount in time. */
-	public void tick(float ticks);
+    
+    /**
+     * Get the position of the Entity after specified time has passed
+     * 
+     * @param ticks
+     *            time since the last tick() call
+     */
+    public Vector2f getPosition(int ticks);
+    
+    /**
+     * Get the position of the Entity after specified time has passed
+     * 
+     * @param ticks
+     *            time since the last tick() call
+     */
+    public Shape getShape(int ticks);
+    
+    /**
+     * Get the velocity of the Entity at the specified time
+     * 
+     * @param ticks
+     *            time since the last tick() call
+     */
+    public Vector2f getVelocity(int ticks);
+    
+    /**
+     * Entity will collide with another entity - handle it.
+     * 
+     * @param collision
+     *            an object containing info about the collision
+     * @param ticks
+     *            the length of this timestep
+     * @return the new position of the object at the full time, as specified by ticks
+     */
+    public Shape handleCollisions(int ticks, List<Collision> collisions);
+    
+    /**
+     * Same as {@link Entity#handleCollisions(int, float)}, but may not change player's game state (health, etc) - useful for when handleCollision
+     * proposes a new position which creates new collision problems.
+     */
+    public Shape rehandleCollisions(int ticks, List<Collision> collisions);
+    
+    /** Advance the entity a certain amount in time. */
+    public void tick(int ticks);
 }

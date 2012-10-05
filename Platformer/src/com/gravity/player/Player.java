@@ -1,5 +1,7 @@
 package com.gravity.player;
 
+import java.util.List;
+
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -86,35 +88,35 @@ public class Player implements Entity {
 
 	// Get where you WILL be in "ticks" time
 	@Override
-	public Vector2f getPosition(float ticks) {
+	public Vector2f getPosition(int ticks) {
 		return newPosition;
 	}
 
 	@Override
-	public Shape getShape(float ticks) {
+	public Shape getShape(int ticks) {
 		// TODO
 		return null;
 	}
 
 	@Override
-	public Vector2f getVelocity(float ticks) {
+	public Vector2f getVelocity(int ticks) {
 		return velocity;
 	}
 
 	@Override
-	public Shape handleCollisions(float ticks, Collision... collisions) {
+	public Shape handleCollisions(int ticks, List<Collision> collisions) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Shape rehandleCollisions(float ticks, Collision... collisions) {
+	public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void tick(float millis) {
+	public void tick(int millis) {
 		handleMotion(millis);
 	}
 
