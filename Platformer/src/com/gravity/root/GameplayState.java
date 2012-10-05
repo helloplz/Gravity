@@ -49,7 +49,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         // TODO call the render stack
         rendererMap.render(g);
-        
+        rendererA.render(g);
     }
     
     @Override
