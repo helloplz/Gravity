@@ -19,11 +19,12 @@ public class PlayerRenderer implements Renderer {
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
-		
+		this.x = 100;
+		this.y = 500;
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(playerOneImage, 0, 0 /*this.x, this.y*/);
+		g.drawImage(playerOneImage, this.x, this.y);
 	}
 }
