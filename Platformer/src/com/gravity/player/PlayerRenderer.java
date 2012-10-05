@@ -7,25 +7,25 @@ import org.newdawn.slick.SlickException;
 import com.gravity.root.Renderer;
 
 public class PlayerRenderer implements Renderer {
-	private Player player;
-	private Image playerOneImage;
-	private float x;
-	private float y;
-
-	public PlayerRenderer(Player player) {
-		this.player = player;
-		try {
+    private Player player;
+    private Image  playerOneImage;
+    private float  x;
+    private float  y;
+    
+    public PlayerRenderer(Player player) {
+        this.player = player;
+        try {
             playerOneImage = new Image("./assets/TopHatGuy.png");
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
-
-	}
-
-	@Override
-	public void render(Graphics g) {
-		this.x = player.oldPosition.x;
-		this.y = player.oldPosition.y + 512;
-		g.drawImage(playerOneImage, this.x, this.y);
-	}
+        
+    }
+    
+    @Override
+    public void render(Graphics g) {
+        this.x = player.getPosition().x;
+        this.y = player.getPosition().y + 512;
+        g.drawImage(playerOneImage, this.x, this.y);
+    }
 }
