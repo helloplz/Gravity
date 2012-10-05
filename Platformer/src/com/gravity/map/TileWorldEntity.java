@@ -1,5 +1,7 @@
 package com.gravity.map;
 
+import java.util.List;
+
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -22,32 +24,32 @@ public class TileWorldEntity implements Entity {
     }
     
     @Override
-    public Vector2f getPosition(float ticks) {
-        return new Vector2f(position.getCenterX(), position.getCenterY());
+    public Vector2f getPosition(int ticks) {
+        return null;
     }
     
     @Override
-    public Vector2f getVelocity(float ticks) {
+    public Vector2f getVelocity(int ticks) {
         return new Vector2f(0, 0);
     }
     
     @Override
-    public Shape handleCollisions(float ticks, Collision... collisions) {
+    public Shape handleCollisions(int ticks, List<Collision> collisions) {
         return position;
     }
     
     @Override
-    public Shape rehandleCollisions(float ticks, Collision... collisions) {
+    public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
         return position;
     }
     
     @Override
-    public void tick(float ticks) {
+    public void tick(int ticks) {
         // Map Entity does not change over time
     }
     
     @Override
-    public Shape getShape(float ticks) {
+    public Shape getShape(int ticks) {
         return position;
     }
     
