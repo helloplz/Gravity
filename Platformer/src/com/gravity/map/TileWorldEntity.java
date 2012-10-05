@@ -22,8 +22,8 @@ public class TileWorldEntity implements Entity {
 	}
 
 	@Override
-	public Shape getPosition(float ticks) {
-		return position;
+	public Vector2f getPosition(float ticks) {
+		return null;
 	}
 
 	@Override
@@ -44,6 +44,11 @@ public class TileWorldEntity implements Entity {
 	@Override
 	public void tick(float ticks) {
 		// Map Entity does not change over time
+	}
+
+	@Override
+	public Shape getShape(float ticks) {
+		return position;
 	}
 
 }
