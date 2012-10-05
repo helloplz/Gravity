@@ -12,43 +12,43 @@ import com.gravity.physics.Entity;
  * @author xiao
  */
 public class TileWorldEntity implements Entity {
-
-	private Shape position;
-	private TileWorld map;
-
-	public TileWorldEntity(Shape shape, TileWorld map) {
-		this.position = shape;
-		this.map = map;
-	}
-
-	@Override
-	public Vector2f getPosition(float ticks) {
-		return null;
-	}
-
-	@Override
-	public Vector2f getVelocity(float ticks) {
-		return new Vector2f(0, 0);
-	}
-
-	@Override
-	public Shape handleCollisions(float ticks, Collision... collisions) {
-		return position;
-	}
-
-	@Override
-	public Shape rehandleCollisions(float ticks, Collision... collisions) {
-		return position;
-	}
-
-	@Override
-	public void tick(float ticks) {
-		// Map Entity does not change over time
-	}
-
-	@Override
-	public Shape getShape(float ticks) {
-		return position;
-	}
-
+    
+    private Shape     position;
+    private TileWorld map;
+    
+    public TileWorldEntity(Shape shape, TileWorld map) {
+        this.position = shape;
+        this.map = map;
+    }
+    
+    @Override
+    public Vector2f getPosition(float ticks) {
+        return new Vector2f(position.getCenterX(), position.getCenterY());
+    }
+    
+    @Override
+    public Vector2f getVelocity(float ticks) {
+        return new Vector2f(0, 0);
+    }
+    
+    @Override
+    public Shape handleCollisions(float ticks, Collision... collisions) {
+        return position;
+    }
+    
+    @Override
+    public Shape rehandleCollisions(float ticks, Collision... collisions) {
+        return position;
+    }
+    
+    @Override
+    public void tick(float ticks) {
+        // Map Entity does not change over time
+    }
+    
+    @Override
+    public Shape getShape(float ticks) {
+        return position;
+    }
+    
 }
