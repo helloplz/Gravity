@@ -1,6 +1,7 @@
 package com.gravity.map;
 
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
@@ -9,16 +10,20 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.gravity.physics.Entity;
 
 public class TileWorld implements GameWorld {
     
-    private Tile[][] terrain;
+    private Tile[][]           terrain;
     
-    public final int height;
-    public final int width;
+    public final int           height;
+    public final int           width;
     
-    private TiledMap map;
+    private List<Entity>       entities;
+    private Map<Shape, Entity> touchingBoxes;
+    
+    private TiledMap           map;
     
     public TileWorld(TiledMap map) {
         // Get width/height
@@ -40,12 +45,35 @@ public class TileWorld implements GameWorld {
          * 
          * System.out.println(x); } }
          */
+        
+        touchingBoxes = Maps.newHashMap();
+        Entity bottom = new TileWorldEntity(new Rectangle(0, 20, 20, 1), this);
+        Rectangle bound = new Rectangle(0, 20, 20, 1);
+        bound.grow(.1f, .1f);
+        touchingBoxes.put(bound, bottom);
+        entities = Lists.newArrayList(bottom);
     }
     
     @Override
-    public List<Shape> getCollisions(Shape shape) {
-        // TODO
-        return null;
+    public List<Entity> getCollisions(Shape shape) {
+        List<Entity> collisions = Lists.newArrayList();
+        for (Entity ent : entities) {
+            if (shape.intersects(ent.getShape(0))) {
+                collisions.add(ent);
+            }
+        }
+        return collisions;
+    }
+    
+    @Override
+    public List<Entity> getTouching(Shape shape) {
+        List<Entity> touches = Lists.newArrayList();
+        for (Shape terrain : touchingBoxes.keySet()) {
+            if (shape.intersects(terrain)) {
+                touches.add(touchingBoxes.get(terrain));
+            }
+        }
+        return touches;
     }
     
     public Tile getTerrain(int x, int y) {
@@ -73,8 +101,7 @@ public class TileWorld implements GameWorld {
     
     @Override
     public List<Entity> getTerrainEntities() {
-        Entity bottom = new TileWorldEntity(new Rectangle(0, 20, 20, 1), this);
-        return Lists.newArrayList(bottom);
+        return entities;
     }
     
     @Override
