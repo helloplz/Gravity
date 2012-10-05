@@ -2,6 +2,7 @@ package com.gravity.root;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -41,8 +42,12 @@ public class GameplayState extends BasicGameState implements
 		rendererMap = new TileWorldRenderer(map);
 		rendererA = new PlayerRenderer(playerA);
 		rendererB = new PlayerRenderer(playerB);
-		controllerA = new PlayerKeyboardController(playerA);
-		controllerB = new PlayerKeyboardController(playerB);
+		controllerA = new PlayerKeyboardController(playerA)
+				.setLeft(Input.KEY_A).setRight(Input.KEY_D)
+				.setJump(Input.KEY_W).setMisc(Input.KEY_S);
+		controllerB = new PlayerKeyboardController(playerB)
+				.setLeft(Input.KEY_LEFT).setRight(Input.KEY_RIGHT)
+				.setJump(Input.KEY_UP).setMisc(Input.KEY_DOWN);
 	}
 
 	@Override
@@ -61,12 +66,16 @@ public class GameplayState extends BasicGameState implements
 
 	@Override
 	public void keyPressed(int key, char c) {
-		System.out.println("Key pressed: " + key + " " + c);
+		if (!controllerA.handleKeyPress(key)) {
+			controllerB.handleKeyPress(key);
+		}
 	}
 
 	@Override
 	public void keyReleased(int key, char c) {
-		System.out.println("Key released: " + key + " " + c);
+		if (!controllerA.handleKeyRelease(key)) {
+			controllerB.handleKeyRelease(key);
+		}
 	}
 
 	@Override
