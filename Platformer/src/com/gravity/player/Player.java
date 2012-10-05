@@ -8,19 +8,21 @@ import com.gravity.physics.Entity;
 
 public abstract class Player implements Entity {
 
-	private float jumpPower = 5;
-	private float moveSpeed = 3;
-	private float maxHealth = 10;
+	// PLAYER STARTING CONSTANTS
+	private final float JUMP_POWER = 5;
+	private final float MOVEMENT_INCREMENT = 3;
+	private float MAX_HEALTH = 10;
 
+	// PLAYER CURRENT VALUES
 	private GameWorld map;
 
 	private Vector2f position;
 	private Vector2f velocity;
-	private Vector2f normal;
+	private Vector2f facing;
 	private float health;
 
 	public Player(GameWorld map) {
-		health = maxHealth;
+		health = MAX_HEALTH;
 		velocity = new Vector2f(0, 0);
 		this.map = map;
 	}
@@ -34,7 +36,7 @@ public abstract class Player implements Entity {
 	}
 
 	public void jump() {
-		velocity.add(new Vector2f(0, jumpPower));
+		velocity.add(new Vector2f(0, JUMP_POWER));
 	}
 
 	public void land() {
@@ -42,11 +44,11 @@ public abstract class Player implements Entity {
 	}
 
 	public void moveLeft() {
-		velocity.set(-moveSpeed, velocity.getY());
+		velocity.set(-MOVEMENT_INCREMENT, velocity.getY());
 	}
 
 	public void moveRight() {
-		velocity.set(moveSpeed, velocity.getY());
+		velocity.set(MOVEMENT_INCREMENT, velocity.getY());
 	}
 
 	public void stopMove() {
@@ -54,11 +56,11 @@ public abstract class Player implements Entity {
 	}
 
 	public float jumpPower() {
-		return jumpPower;
+		return JUMP_POWER;
 	}
 
 	public float moveSpeed() {
-		return moveSpeed;
+		return MOVEMENT_INCREMENT;
 	}
 
 	@Override
