@@ -2,6 +2,7 @@ package com.gravity.map;
 
 import java.util.List;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
@@ -15,26 +16,28 @@ public class TileWorld implements GameWorld {
     public final int height;
     public final int width;
 
+    private TiledMap map;
+
     public TileWorld(TiledMap map) {
         // Get width/height
         this.width = new Integer(map.getMapProperty("width", "1024"));
-        this.height = new Integer(map.getMapProperty("height", "1024"));
+        this.height = new Integer(map.getMapProperty("height", "768"));
 
         this.terrain = new Tile[this.width][this.height];
+        this.map = map;
 
         // Assume all objects are currently terrain
-        int groupCount = map.getObjectGroupCount();
-        for (int groupID = 0; groupID < groupCount; groupID++) {
-            int objectCount = map.getObjectCount(groupID);
-            for (int objectID = 0; objectID < objectCount; objectID++) {
-                int x = map.getObjectX(groupID, objectID);
-                int y = map.getObjectY(groupID, objectID);
-
-                Vector2f position = new Vector2f(x, y);
-
-                terrain[x][y] = new BasicGroundTile(position);
-            }
-        }
+        /*
+         * int groupCount = map.getObjectGroupCount(); for (int groupID = 0; groupID < groupCount; groupID++) { int objectCount =
+         * map.getObjectCount(groupID); for (int objectID = 0; objectID < objectCount; objectID++) { int x = map.getObjectX(groupID, objectID); int y
+         * = map.getObjectY(groupID, objectID);
+         * 
+         * Vector2f position = new Vector2f(x, y);
+         * 
+         * this.terrain[x][y] = new BasicGroundTile(position);
+         * 
+         * System.out.println(x); } }
+         */
     }
 
     @Override
@@ -70,5 +73,13 @@ public class TileWorld implements GameWorld {
     public List<Entity> getTerrainEntities() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void render(Graphics g) {
+        g.pushTransform();
+        map.render(0, 0);
+        g.resetTransform();
+        g.popTransform();
     }
 }

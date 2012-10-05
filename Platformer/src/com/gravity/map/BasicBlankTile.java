@@ -18,7 +18,7 @@ public class BasicBlankTile extends Tile {
 
     // Blank tiles are passable - make the shape to reflect that
     private BasicBlankTile(Image image) {
-        super(new Polygon(), image);
+        super(null, image);
     }
 
     public BasicBlankTile(Vector2f position) {
