@@ -14,8 +14,6 @@ import com.google.common.collect.Maps;
 import com.gravity.physics.Entity;
 
 public class TileWorld implements GameWorld {
-    private Tile[][] terrain;
-
     public final int height;
     public final int width;
 
@@ -35,7 +33,6 @@ public class TileWorld implements GameWorld {
         this.width = map.getWidth() * tileWidth;
         this.height = map.getHeight() * tileHeight;
 
-        this.terrain = new Tile[map.getWidth()][map.getHeight()];
         this.map = map;
 
         touchingBoxes = Maps.newHashMap();
@@ -83,19 +80,6 @@ public class TileWorld implements GameWorld {
             }
         }
         return touches;
-    }
-
-    public Tile getTerrain(int x, int y) {
-        x = x % width; // Automatically handle wrapping around
-        if (y >= 0 && y < height) {
-            Tile ret = terrain[x][y];
-            if (ret == null)
-                return new BasicBlankTile(new Vector2f(x, y));
-            return terrain[x][y];
-        } else {
-            System.out.println("TileMap error: called getTerrain with y=" + y + ", but did not meet bounds of [0," + height + ")");
-        }
-        return new BasicBlankTile(new Vector2f(x, y));
     }
 
     @Override
