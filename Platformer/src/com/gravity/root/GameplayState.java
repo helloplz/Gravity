@@ -43,7 +43,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
 
     public void resetState() throws SlickException {
-        map = new TileWorld(new TiledMap("assets/longmap.tmx"));
+        map = new TileWorld(new TiledMap("assets/game_map.tmx"));
         playerA = new Player(map, this);
         playerB = new Player(map, this);
         rendererMap = new TileWorldRenderer(map);
