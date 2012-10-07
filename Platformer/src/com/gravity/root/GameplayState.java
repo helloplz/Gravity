@@ -34,6 +34,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private float offsetX; // Current offset x... should be negative
     private float offsetY; // Current offset y
     private float maxOffsetX; // Maximum offset x can ever be
+    private int totalTime; // Time since start
 
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
@@ -57,6 +58,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         offsetX = 0;
         offsetY = 0;
         maxOffsetX = (map.getWidth() - container.getWidth()) * -1;
+        totalTime = 0;
     }
 
     @Override
@@ -68,12 +70,17 @@ public class GameplayState extends BasicGameState implements GravityGameControll
 
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+        totalTime += delta;
         collisions.update(delta);
-        offsetX -= delta * 0.05;
+        offsetX -= delta * getOffsetXDelta();
         offsetX = Math.max(offsetX, maxOffsetX);
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
 
+    }
+
+    private float getOffsetXDelta() {
+        return 0.05f + totalTime / (1000 * 100);
     }
 
     @Override
