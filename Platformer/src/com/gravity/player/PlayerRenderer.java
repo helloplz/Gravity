@@ -91,7 +91,7 @@ public class PlayerRenderer implements Renderer {
     @Override
     public void render(Graphics g) {
         this.x = player.getPosition().x;
-        this.y = player.getPosition().y + 512;
+        this.y = player.getPosition().y;
         if (tweener % 4 == 0) {
             if (lastImage == null) {
                 g.drawImage(bunnyPlayer, this.x, this.y);
