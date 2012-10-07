@@ -145,22 +145,22 @@ public class Player implements Entity {
         if (sh.getMaxX() >= oth.getMinX()) {
             // collision right
             velocity.x = 0;
-            position.x -= (sh.getMaxX() - oth.getMinX());
+            position.x -= sh.getMaxX() - oth.getMinX() + 1;
         } else if (sh.getMinX() <= oth.getMaxX()) {
             // collision left
             velocity.x = 0;
-            position.x += oth.getMaxX() - sh.getMinX();
+            position.x += oth.getMaxX() - sh.getMinX() + 1;
         }
         // If I'm overlapping their ycoord
         else if (sh.getMaxY() >= oth.getMinY()) {
             // collision top
             velocity.y = 0;
-            position.y -= sh.getMaxY() - oth.getMinY();
+            position.y -= sh.getMaxY() - oth.getMinY() + 1;
             onGround = false;
         } else if (sh.getMinY() <= oth.getMaxY()) {
             // collision bottom
             velocity.y = 0;
-            position.y += oth.getMaxY() - sh.getMinY();
+            position.y += oth.getMaxY() - sh.getMinY() + 1;
             onGround = true;
         } else {
             throw new RuntimeException("No overlap detected: " + sh.toString() + " with " + oth.toString());
