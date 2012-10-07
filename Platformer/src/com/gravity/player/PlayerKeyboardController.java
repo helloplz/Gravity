@@ -22,6 +22,25 @@ public class PlayerKeyboardController {
     
     public enum Control {
         LEFT, RIGHT, JUMP, MISC;
+        
+        public static int size() {
+            return 4;
+        }
+        
+        public static Control getById(int id) {
+            switch (id) {
+                case 0:
+                    return LEFT;
+                case 1:
+                    return RIGHT;
+                case 2:
+                    return JUMP;
+                case 3:
+                    return MISC;
+                default:
+                    throw new IllegalArgumentException("No Control id " + id);
+            }
+        }
     }
     
     public int getControl(Control ctrl) {
@@ -134,5 +153,24 @@ public class PlayerKeyboardController {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PlayerKeyboardController [left=");
+        builder.append(left);
+        builder.append(", right=");
+        builder.append(right);
+        builder.append(", jump=");
+        builder.append(jump);
+        builder.append(", misc=");
+        builder.append(misc);
+        builder.append(", lefting=");
+        builder.append(lefting);
+        builder.append(", righting=");
+        builder.append(righting);
+        builder.append("]");
+        return builder.toString();
     }
 }

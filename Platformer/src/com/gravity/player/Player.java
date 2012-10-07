@@ -44,12 +44,24 @@ public class Player implements Entity {
     // GAME STATE STUFF
     private boolean onGround = true;
     
-    public Player(GameWorld map, GravityGameController game) {
+    private final String name;
+    
+    public Player(GameWorld map, GravityGameController game, String name) {
         health = MAX_HEALTH;
         velocity = new Vector2f(0, 0);
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
+        this.name = name;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Player [name=");
+        builder.append(name);
+        builder.append("]");
+        return builder.toString();
     }
     
     // //////////////////////////////////////////////////////////////////////////
@@ -209,12 +221,6 @@ public class Player implements Entity {
         updateShape();
     }
     
-    /*
-     * Sets onGround depending on if the player is on the ground or not
-     * 
-     * 
-     * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE >>>>>>> 578f54515a017ccc7211c613d175bbac8740860c
-     */
     public void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
     }

@@ -10,14 +10,16 @@ import com.gravity.map.GameWorld;
 
 public class CollisionEngine {
     
-    private final GameWorld    gameMap;
+    private final GameWorld gameMap;
     private final List<Entity> entities;
     private final List<Entity> terrain;
+    private final List<Entity> spikes;
     
     public CollisionEngine(GameWorld map) {
         gameMap = map;
         entities = Lists.newArrayList();
         terrain = map.getTerrainEntities();
+        spikes = Lists.newArrayList();
     }
     
     public boolean addEntity(Entity entity) {
@@ -84,6 +86,16 @@ public class CollisionEngine {
                         if (!collisions.isEmpty()) {
                             a = entities.get(i).rehandleCollisions(increment, collisions);
                         }
+                    }
+                }
+            }
+            for (Entity spike : spikes) {
+                Shape b = spike.getShape(increment);
+                for (Entity player : entities) {
+                    Shape a = player.getShape(increment);
+                    if (a.intersects(b)) {
+                        spike.handleCollisions(increment,
+                                Lists.newArrayList(new Collision(spike, player, increment, EntityPhysics.collisionPoint(a, b))));
                     }
                 }
             }

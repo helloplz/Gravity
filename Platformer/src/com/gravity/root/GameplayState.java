@@ -1,5 +1,7 @@
 package com.gravity.root;
 
+import java.util.Random;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -31,6 +33,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private PlayerKeyboardController controllerA, controllerB;
     private CollisionEngine collisions;
     private GameContainer container;
+    private final Random rand = new Random();
     
     private float offsetX; // Current offset x... should be negative
     private float offsetY; // Current offset y
@@ -45,8 +48,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     
     public void resetState() throws SlickException {
         map = new TileWorld(new TiledMap("assets/game_map.tmx"));
-        playerA = new Player(map, this);
-        playerB = new Player(map, this);
+        playerA = new Player(map, this, "A");
+        playerB = new Player(map, this, "B");
         rendererMap = new TileWorldRenderer(map);
         rendererA = new PlayerRenderer(playerA);
         rendererB = new PlayerRenderer(playerB);
@@ -110,5 +113,13 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         bkey = controllerB.getControl(ctrl);
         controllerA.setControl(ctrl, akey);
         controllerB.setControl(ctrl, bkey);
+    }
+    
+    @Override
+    public void playerHitSpikes(Player player) {
+        swapPlayerControls(Control.getById(rand.nextInt(Control.size())));
+        System.out.println("Player " + player.toString() + " hit spikes -- remapping controls.");
+        System.out.println("ControllerA: " + controllerA.toString());
+        System.out.println("ControllerB: " + controllerB.toString());
     }
 }
