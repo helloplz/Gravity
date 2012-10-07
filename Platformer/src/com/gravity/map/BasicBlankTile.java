@@ -2,7 +2,6 @@ package com.gravity.map;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 
 public class BasicBlankTile extends Tile {
