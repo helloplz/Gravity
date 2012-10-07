@@ -27,6 +27,7 @@ public class Player implements Entity {
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
+    
     private final Shape BASE_SHAPE = new Rectangle(0f, 0f, 2f, 2f);
     
     // PLAYER CURRENT VALUES
@@ -121,15 +122,14 @@ public class Player implements Entity {
         
         if ((them.getShape(earliest) instanceof Rectangle)) {
             terrainCollision(them, earliest);
+            return myShape;
         }
-        // TODO: Write code for non-rectangles
-        return null;
+        throw new RuntimeException("Cannot resolve non-Rectangle collision.");
     }
     
     @Override
     public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Cannot resolve re-collision.");
     }
     
     /**
@@ -162,20 +162,20 @@ public class Player implements Entity {
     /**
      * Handles collision with terrain
      */
-    public void terrainCollision(Entity collidee, int millis) {
-        position.add(velocity.scale((float) (millis - (1.0 / 1000))));
-        updateShape();
+    private void terrainCollision(Entity collidee, int millis) {
+        // position.add(velocity.scale((float) (millis - (10000.0 / 1000))));
+        // updateShape();
         // If I'm overlapping their xcoord
-        if (this.getShape(millis + 1).getMaxX() > collidee.getShape(millis + 1).getMinX()) {
+        if (this.getShape(millis).getMaxX() > collidee.getShape(millis).getMinX()) {
             velocity.x = 0;
-        } else if (this.getShape(millis + 1).getMinX() < collidee.getShape(millis + 1).getMaxX()) {
+        } else if (this.getShape(millis).getMinX() < collidee.getShape(millis).getMaxX()) {
             velocity.x = 0;
         }
         // If I'm overlapping their ycoord
-        else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
+        else if (this.getShape(millis).getMinY() < collidee.getShape(millis).getMaxY()) {
             velocity.y = 0;
             onGround = true;
-        } else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
+        } else if (this.getShape(millis).getMinY() > collidee.getShape(millis).getMaxY()) {
             velocity.y = 0;
             onGround = true;
         }
