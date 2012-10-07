@@ -15,23 +15,23 @@ import com.gravity.physics.Entity;
 
 public class TileWorld implements GameWorld {
     private Tile[][] terrain;
-
+    
     public final int height;
     public final int width;
-
+    
     private List<Entity> entities;
     private Map<Shape, Entity> touchingBoxes;
-
+    
     private TiledMap map;
-
+    
     public TileWorld(TiledMap map) {
         // Get width/height
         this.width = new Integer(map.getMapProperty("width", "1024"));
         this.height = new Integer(map.getMapProperty("height", "768"));
-
+        
         this.terrain = new Tile[this.width][this.height];
         this.map = map;
-
+        
         // Assume all objects are currently terrain
         /*
          * int groupCount = map.getObjectGroupCount(); for (int groupID = 0; groupID < groupCount; groupID++) { int objectCount =
@@ -44,15 +44,15 @@ public class TileWorld implements GameWorld {
          * 
          * System.out.println(x); } }
          */
-
+        
         touchingBoxes = Maps.newHashMap();
-        Entity bottom = new TileWorldEntity(new Rectangle(0, 20, 20, 1), this);
-        Rectangle bound = new Rectangle(0, 20, 20, 1);
+        Entity bottom = new TileWorldEntity(new Rectangle(0, 20, 20, 2), this);
+        Rectangle bound = new Rectangle(0, 20, 20, 2);
         bound.grow(.1f, .1f);
         touchingBoxes.put(bound, bottom);
         entities = Lists.newArrayList(bottom);
     }
-
+    
     @Override
     public List<Entity> getCollisions(Shape shape) {
         List<Entity> collisions = Lists.newArrayList();
@@ -63,7 +63,7 @@ public class TileWorld implements GameWorld {
         }
         return collisions;
     }
-
+    
     @Override
     public List<Entity> getTouching(Shape shape) {
         List<Entity> touches = Lists.newArrayList();
@@ -74,7 +74,7 @@ public class TileWorld implements GameWorld {
         }
         return touches;
     }
-
+    
     public Tile getTerrain(int x, int y) {
         x = x % width; // Automatically handle wrapping around
         if (y >= 0 && y < height) {
@@ -87,22 +87,22 @@ public class TileWorld implements GameWorld {
         }
         return new BasicBlankTile(new Vector2f(x, y));
     }
-
+    
     @Override
     public int getHeight() {
         return height;
     }
-
+    
     @Override
     public int getWidth() {
         return width;
     }
-
+    
     @Override
     public List<Entity> getTerrainEntities() {
         return entities;
     }
-
+    
     @Override
     public void render(Graphics g) {
         g.pushTransform();
