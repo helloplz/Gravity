@@ -19,38 +19,48 @@ public class TileWorld implements GameWorld {
     public final int height;
     public final int width;
 
+    public final int tileHeight;
+    public final int tileWidth;
+
     private List<Entity> entities;
     private Map<Shape, Entity> touchingBoxes;
 
     private TiledMap map;
+    private Vector2f curPosition = new Vector2f(0, 0);
 
     public TileWorld(TiledMap map) {
         // Get width/height
-        this.width = new Integer(map.getMapProperty("width", "1024"));
-        this.height = new Integer(map.getMapProperty("height", "768"));
+        this.tileWidth = map.getTileWidth();
+        this.tileHeight = map.getTileHeight();
+        this.width = map.getWidth() * tileWidth;
+        this.height = map.getHeight() * tileHeight;
 
-        this.terrain = new Tile[this.width][this.height];
+        this.terrain = new Tile[map.getWidth()][map.getHeight()];
         this.map = map;
 
-        // Assume all objects are currently terrain
-        /*
-         * int groupCount = map.getObjectGroupCount(); for (int groupID = 0; groupID < groupCount; groupID++) { int objectCount =
-         * map.getObjectCount(groupID); for (int objectID = 0; objectID < objectCount; objectID++) { int x = map.getObjectX(groupID, objectID); int y
-         * = map.getObjectY(groupID, objectID);
-         * 
-         * Vector2f position = new Vector2f(x, y);
-         * 
-         * this.terrain[x][y] = new BasicGroundTile(position);
-         * 
-         * System.out.println(x); } }
-         */
-
         touchingBoxes = Maps.newHashMap();
-        Entity bottom = new TileWorldEntity(new Rectangle(0, 20, 20, 1), this);
-        Rectangle bound = new Rectangle(0, 20, 20, 1);
+        Rectangle bound = new Rectangle(0, this.height - this.tileHeight, this.width, 1 * tileHeight);
+        Entity bottom = new TileWorldEntity(bound, this);
         bound.grow(.1f, .1f);
         touchingBoxes.put(bound, bottom);
         entities = Lists.newArrayList(bottom);
+
+        // Iterate over and find all tiles
+        int layerId = 0;
+        for (int i = 0; i < map.getWidth(); i++) {
+            for (int j = 0; j < map.getHeight(); j++) {
+                int tileId = map.getTileId(i, j, layerId);
+                if (tileId != 0) {
+                    // Tile exists at this spot
+                    Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    Entity e = new TileWorldEntity(r, this);
+
+                    touchingBoxes.put(r, e);
+                    entities.add(e);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -106,7 +116,7 @@ public class TileWorld implements GameWorld {
     @Override
     public void render(Graphics g) {
         g.pushTransform();
-        map.render(0, 0);
+        map.render((int) curPosition.x, (int) curPosition.y);
         g.resetTransform();
         g.popTransform();
     }

@@ -20,13 +20,15 @@ public class Player implements Entity {
 
     private GravityGameController game;
 
-    // PLAYER STARTING CONSTANTS (Units = pixels/millisecond)
+    // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     private final float JUMP_POWER = 1f;
-    private final float MOVEMENT_INCREMENT = .2f;
-    private float MAX_HEALTH = 10;
-    private float MAX_VEL = 100f;
-    private float VEL_DAMP = 0.5f;
-    private float GRAVITY = 10.0f / 1000f;
+    private final float MOVEMENT_INCREMENT = 1f / 2f;
+    private final float MAX_HEALTH = 10;
+    private final float MAX_VEL = 100f;
+    private final float VEL_DAMP = 0.5f;
+    private final float GRAVITY = 1.0f / 500f;
+
+    private final Shape BASE_SHAPE = new Rectangle(0f, 0f, 2f, 2f);
 
     // PLAYER CURRENT VALUES
     private GameWorld map;
@@ -47,7 +49,7 @@ public class Player implements Entity {
         velocity = new Vector2f(0, 0);
         this.map = map;
         this.game = game;
-        this.myShape = new Rectangle(-.5f, -.5f, 1f, 1f);
+        this.myShape = BASE_SHAPE;
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -64,7 +66,7 @@ public class Player implements Entity {
 
     @Override
     public Shape getShape(int ticks) {
-        return myShape.transform(Transform.createTranslateTransform(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks)));
+        return BASE_SHAPE.transform(Transform.createTranslateTransform(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks)));
     }
 
     @Override
@@ -83,6 +85,7 @@ public class Player implements Entity {
     public void jump(boolean jumping) {
         if (jumping && onGround) {
             velocity.y -= JUMP_POWER;
+            onGround = false;
         }
     }
 
@@ -119,15 +122,14 @@ public class Player implements Entity {
 
         if ((them.getShape(earliest) instanceof Rectangle)) {
             terrainCollision(them, earliest);
+            return myShape;
         }
-        // TODO: Write code for non-rectangles
-        return null;
+        throw new RuntimeException("Cannot resolve non-Rectangle collision.");
     }
 
     @Override
     public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Cannot resolve re-collision.");
     }
 
     /**
@@ -160,19 +162,22 @@ public class Player implements Entity {
     /**
      * Handles collision with terrain
      */
-    public void terrainCollision(Entity collidee, int millis) {
-        position.add(velocity.scale((float) (millis - (1.0 / 1000))));
+    private void terrainCollision(Entity collidee, int millis) {
+        // position.add(velocity.scale((float) (millis - (10000.0 / 1000))));
+        // updateShape();
         // If I'm overlapping their xcoord
-        if (this.getShape(millis + 1).getMaxX() > collidee.getShape(millis + 1).getMinX()) {
+        if (this.getShape(millis).getMaxX() > collidee.getShape(millis).getMinX()) {
             velocity.x = 0;
-        } else if (this.getShape(millis + 1).getMinX() < collidee.getShape(millis + 1).getMaxX()) {
+        } else if (this.getShape(millis).getMinX() < collidee.getShape(millis).getMaxX()) {
             velocity.x = 0;
         }
         // If I'm overlapping their ycoord
-        else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
+        else if (this.getShape(millis).getMinY() < collidee.getShape(millis).getMaxY()) {
             velocity.y = 0;
-        } else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
+            onGround = true;
+        } else if (this.getShape(millis).getMinY() > collidee.getShape(millis).getMaxY()) {
             velocity.y = 0;
+            onGround = true;
         }
     }
 
@@ -189,7 +194,6 @@ public class Player implements Entity {
     // //////////////////////////////////////////////////////////////////////////
     @Override
     public void tick(int millis) {
-        isOnGround(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
         updatePosition(millis);
@@ -215,13 +219,17 @@ public class Player implements Entity {
 
     public void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
+        updateShape();
     }
 
     /*
      * Sets onGround depending on if the player is on the ground or not
+     * 
+     * 
+     * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE >>>>>>> 578f54515a017ccc7211c613d175bbac8740860c
      */
-    public void isOnGround(float millis) {
-        // TODO
+    public void updateShape() {
+        myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
     }
 
 }
