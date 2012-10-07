@@ -39,7 +39,7 @@ public class TileWorld implements GameWorld {
         this.map = map;
 
         touchingBoxes = Maps.newHashMap();
-        Rectangle bound = new Rectangle(0, this.height * tileHeight, this.width * tileWidth, 1 * tileHeight);
+        Rectangle bound = new Rectangle(0, this.height - this.tileHeight, this.width, 1 * tileHeight);
         Entity bottom = new TileWorldEntity(bound, this);
         bound.grow(.1f, .1f);
         touchingBoxes.put(bound, bottom);
