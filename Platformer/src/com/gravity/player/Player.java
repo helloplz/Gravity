@@ -27,7 +27,7 @@ public class Player implements Entity {
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
-    private final Shape BASE_SHAPE = new Rectangle(-.5f, -.5f, 1f, 1f);
+    private final Shape BASE_SHAPE = new Rectangle(0f, 0f, 2f, 2f);
     
     // PLAYER CURRENT VALUES
     private GameWorld map;
@@ -65,7 +65,7 @@ public class Player implements Entity {
     
     @Override
     public Shape getShape(int ticks) {
-        return myShape.transform(Transform.createTranslateTransform(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks)));
+        return BASE_SHAPE.transform(Transform.createTranslateTransform(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks)));
     }
     
     @Override
