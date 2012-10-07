@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="200" height="24" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="perspective_walls" tilewidth="32" tileheight="32">
+  <image source="perspective_walls.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="65" name="bunnyTile" tilewidth="32" tileheight="32">
+  <image source="bunnyTile.png" width="32" height="32"/>
+ </tileset>
+ <tileset firstgid="66" name="bunnyDirt" tilewidth="32" tileheight="32">
+  <image source="bunnyDirt.png" width="32" height="32"/>
+ </tileset>
+ <tileset firstgid="67" name="betterBunnyDirt" tilewidth="32" tileheight="32">
+  <image source="betterBunnyDirt.png" width="32" height="32"/>
+ </tileset>
+ <layer name="collisions" width="200" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2Za47CMAyEY3EChDgBPzhHtfe/024kIlleuyRpHIcyI32idV520xG0XFNKBAD4x+2PS/pMRV87cH4uaW1/RF8f8N3M9EdZU56Tcg7ACnj6g4xjrU/0dQBAY5Y/yrkW420ArET07yseJxHXxgIwk1n+IOOc55KUGACRRL2/knkk8QnACsz8/iBxTCJutY2kNk8AMl7+IONYayNx7ElN3gAUVvt/8Jp86+UqsZsSAyCzgj+4J+5Gn1H1auL1R+8HWIsof9R4gmtUvZqkP2oVvXfAn5n+aPHE9qKopzYpqw3+ABbe/ujxRObnRVFrXZqs+J4/9uaO3jvgj4c/jnqCU9RSk5yfz6FJe/5ISky2Re8d8GeUP0Z64og/5Dpcsr2MeRjraH3JiIFzcsQfXp7o9Ydcj0vrU7T3/mpvjui9A/60+mOGJ3r8IdflsvoVvXu/K+eqzQl8PvneeDb0n+GJVn/I9WvGcdX8/8Hba3IC5yD/9j76/LGlsZ7Q/FGbR8+4lvrpfRfoROp9/vD0RI8/ZB5bw1j4A7KU742tA09PyPu8N5+eugCQ/AI/lc2vAEsAAA==
+  </data>
+ </layer>
+</map>
