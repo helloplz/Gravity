@@ -20,13 +20,13 @@ public class Player implements Entity {
     
     private GravityGameController game;
     
-    // PLAYER STARTING CONSTANTS (Units = pixels/millisecond)
+    // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     private final float JUMP_POWER = 1f;
-    private final float MOVEMENT_INCREMENT = 1f;
+    private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
-    private final float GRAVITY = 10.0f / 1000f;
+    private final float GRAVITY = 1.0f / 500f;
     private final Shape BASE_SHAPE = new Rectangle(-.5f, -.5f, 1f, 1f);
     
     // PLAYER CURRENT VALUES
@@ -84,6 +84,7 @@ public class Player implements Entity {
     public void jump(boolean jumping) {
         if (jumping && onGround) {
             velocity.y -= JUMP_POWER;
+            onGround = false;
         }
     }
     
@@ -173,8 +174,10 @@ public class Player implements Entity {
         // If I'm overlapping their ycoord
         else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
             velocity.y = 0;
+            onGround = true;
         } else if (this.getShape(millis + 1).getMinY() < collidee.getShape(millis + 1).getMaxY()) {
             velocity.y = 0;
+            onGround = true;
         }
     }
     
@@ -191,7 +194,6 @@ public class Player implements Entity {
     // //////////////////////////////////////////////////////////////////////////
     @Override
     public void tick(int millis) {
-        isOnGround(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
         updatePosition(millis);
@@ -218,13 +220,6 @@ public class Player implements Entity {
     public void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
         updateShape();
-    }
-    
-    /**
-     * Sets onGround depending on if the player is on the ground or not
-     */
-    public void isOnGround(float millis) {
-        // TODO
     }
     
     /**
