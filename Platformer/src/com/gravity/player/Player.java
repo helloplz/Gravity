@@ -23,10 +23,11 @@ public class Player implements Entity {
     // PLAYER STARTING CONSTANTS (Units = pixels/millisecond)
     private final float JUMP_POWER = 1f;
     private final float MOVEMENT_INCREMENT = 1f;
-    private float MAX_HEALTH = 10;
-    private float MAX_VEL = 100f;
-    private float VEL_DAMP = 0.5f;
-    private float GRAVITY = 10.0f / 1000f;
+    private final float MAX_HEALTH = 10;
+    private final float MAX_VEL = 100f;
+    private final float VEL_DAMP = 0.5f;
+    private final float GRAVITY = 10.0f / 1000f;
+    private final Shape BASE_SHAPE = new Rectangle(-.5f, -.5f, 1f, 1f);
     
     // PLAYER CURRENT VALUES
     private GameWorld map;
@@ -47,7 +48,7 @@ public class Player implements Entity {
         velocity = new Vector2f(0, 0);
         this.map = map;
         this.game = game;
-        this.myShape = new Rectangle(-.5f, -.5f, 1f, 1f);
+        this.myShape = BASE_SHAPE;
     }
     
     // //////////////////////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ public class Player implements Entity {
      */
     public void terrainCollision(Entity collidee, int millis) {
         position.add(velocity.scale((float) (millis - (1.0 / 1000))));
+        updateShape();
         // If I'm overlapping their xcoord
         if (this.getShape(millis + 1).getMaxX() > collidee.getShape(millis + 1).getMinX()) {
             velocity.x = 0;
@@ -215,13 +217,21 @@ public class Player implements Entity {
     
     public void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
+        updateShape();
     }
     
-    /*
+    /**
      * Sets onGround depending on if the player is on the ground or not
      */
     public void isOnGround(float millis) {
         // TODO
+    }
+    
+    /**
+     * CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE
+     */
+    public void updateShape() {
+        myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
     }
     
 }
