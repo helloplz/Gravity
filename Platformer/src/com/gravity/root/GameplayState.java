@@ -14,6 +14,7 @@ import com.gravity.map.TileWorldRenderer;
 import com.gravity.physics.CollisionEngine;
 import com.gravity.player.Player;
 import com.gravity.player.PlayerKeyboardController;
+import com.gravity.player.PlayerKeyboardController.Control;
 import com.gravity.player.PlayerRenderer;
 
 public class GameplayState extends BasicGameState implements GravityGameController {
@@ -100,5 +101,14 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     @Override
     public void playerDies(Player player) {
         // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void swapPlayerControls(Control ctrl) {
+        int akey, bkey;
+        akey = controllerA.getControl(ctrl);
+        bkey = controllerB.getControl(ctrl);
+        controllerA.setControl(ctrl, akey);
+        controllerB.setControl(ctrl, bkey);
     }
 }
