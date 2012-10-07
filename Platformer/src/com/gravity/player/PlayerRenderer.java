@@ -89,27 +89,27 @@ public class PlayerRenderer implements Renderer {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, int offsetX, int offsetY) {
         this.x = player.getPosition().x;
         this.y = player.getPosition().y;
         if (tweener % 4 == 0) {
             if (lastImage == null) {
-                g.drawImage(bunnyPlayer, this.x, this.y);
+                g.drawImage(bunnyPlayer, this.x + offsetX, this.y + offsetY);
                 lastImage = bunnyPlayer;
             } else if (player.getVelocity(0).x > 0) {
-                g.drawImage((runningBunny.get(runningBunny.indexOf(lastImage) + 1)), this.x, this.y);
+                g.drawImage((runningBunny.get(runningBunny.indexOf(lastImage) + 1)), this.x + offsetX, this.y + offsetY);
                 lastImage = runningBunny.get(runningBunny.indexOf(lastImage) + 1);
                 if (lastImage == bunnyPlayerRun6) {
                     lastImage = bunnyPlayerRun1;
                 }
             } else if (player.getVelocity(0).x < 0) {
-                g.drawImage((runningBackBunny.get(runningBackBunny.indexOf(lastImage) + 1)), this.x, this.y);
+                g.drawImage((runningBackBunny.get(runningBackBunny.indexOf(lastImage) + 1)), this.x + offsetX, this.y + offsetY);
                 lastImage = runningBackBunny.get(runningBackBunny.indexOf(lastImage) + 1);
                 if (lastImage == bunnyPlayerRunBack6) {
                     lastImage = bunnyPlayerRunBack1;
                 }
             } else {
-                g.drawImage(bunnyPlayer, this.x, this.y);
+                g.drawImage(bunnyPlayer, this.x + offsetX, this.y + offsetY);
                 lastImage = bunnyPlayer;
 
             }
@@ -117,7 +117,7 @@ public class PlayerRenderer implements Renderer {
         }
 
         else {
-            g.drawImage(lastImage, this.x, this.y);
+            g.drawImage(lastImage, this.x + offsetX, this.y + offsetY);
         }
         tweener++;
     }

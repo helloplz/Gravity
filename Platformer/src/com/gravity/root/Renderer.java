@@ -4,13 +4,14 @@ import org.newdawn.slick.Graphics;
 
 public interface Renderer {
 
-	/**
-	 * Render the object that this renderer is attached to.
-	 * 
-	 * @param g
-	 *            the graphics object to render to. Should be in the object's
-	 *            coordinate frame.
-	 */
-	public void render(Graphics g);
+    /**
+     * Render the object that this renderer is attached to.
+     * 
+     * @param g
+     *            the graphics object to render to. Should be in the object's coordinate frame.
+     * @param offsetX
+     * @param offsetY
+     */
+    public void render(Graphics g, int offsetX, int offsetY);
 
 }
