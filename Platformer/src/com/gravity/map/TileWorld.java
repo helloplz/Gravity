@@ -26,6 +26,7 @@ public class TileWorld implements GameWorld {
     private Map<Shape, Entity> touchingBoxes;
 
     private TiledMap map;
+    private Vector2f curPosition = new Vector2f(0, 0);
 
     public TileWorld(TiledMap map) {
         // Get width/height
@@ -115,7 +116,7 @@ public class TileWorld implements GameWorld {
     @Override
     public void render(Graphics g) {
         g.pushTransform();
-        map.render(0, 0);
+        map.render((int) curPosition.x, (int) curPosition.y);
         g.resetTransform();
         g.popTransform();
     }
