@@ -39,8 +39,7 @@ public class TileWorldRenderer implements Renderer {
     }
 
     @Override
-    public void render(Graphics g) {
-
+    public void render(Graphics g, int offsetX, int offsetY) {
         if (tweener % 15 == 0) {
             if (lastBackGround == null) {
                 g.drawImage(Background1, 0, 0);
@@ -59,15 +58,6 @@ public class TileWorldRenderer implements Renderer {
 
         // TiledMap supports easy rendering. Let's use it!
         // Later we'll need to some how adjust x,y for offset/scrolling
-        tileMap.render(g);
-
-        /*
-         * TODO: move this to GameEngine. for (Entity entity : tileMap.entities) { Vector2f position = entity.getPosition(); g.pushTransform();
-         * g.translate(position.getX(), position.getY());
-         * 
-         * entityRenderers.get(entity).render(g);
-         * 
-         * g.resetTransform(); g.popTransform(); }
-         */
+        tileMap.render(g, offsetX, offsetY);
     }
 }
