@@ -43,7 +43,7 @@ public class TileWorld implements GameWorld {
         entities = Lists.newArrayList(bottom);
 
         // Iterate over and find all tiles
-        int layerId = 0;
+        int layerId = 0; // Layer ID to search at
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
                 int tileId = map.getTileId(i, j, layerId);
