@@ -44,12 +44,24 @@ public class Player implements Entity {
     // GAME STATE STUFF
     private boolean               onGround           = true;
     
-    public Player(GameWorld map, GravityGameController game) {
+    private final String          name;
+    
+    public Player(GameWorld map, GravityGameController game, String name) {
         health = MAX_HEALTH;
         velocity = new Vector2f(0, 0);
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
+        this.name = name;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Player [name=");
+        builder.append(name);
+        builder.append("]");
+        return builder.toString();
     }
     
     // //////////////////////////////////////////////////////////////////////////
@@ -145,22 +157,22 @@ public class Player implements Entity {
         if (sh.getMaxX() >= oth.getMinX()) {
             // collision right
             velocity.x = 0;
-            position.x -= (sh.getMaxX() - oth.getMinX());
+            position.x -= sh.getMaxX() - oth.getMinX() + 1;
         } else if (sh.getMinX() <= oth.getMaxX()) {
             // collision left
             velocity.x = 0;
-            position.x += oth.getMaxX() - sh.getMinX();
+            position.x += oth.getMaxX() - sh.getMinX() + 1;
         }
         // If I'm overlapping their ycoord
         else if (sh.getMaxY() >= oth.getMinY()) {
             // collision top
             velocity.y = 0;
-            position.y -= sh.getMaxY() - oth.getMinY();
+            position.y -= sh.getMaxY() - oth.getMinY() + 1;
             onGround = false;
         } else if (sh.getMinY() <= oth.getMaxY()) {
             // collision bottom
             velocity.y = 0;
-            position.y += oth.getMaxY() - sh.getMinY();
+            position.y += oth.getMaxY() - sh.getMinY() + 1;
             onGround = true;
         } else {
             throw new RuntimeException("No overlap detected: " + sh.toString() + " with " + oth.toString());
@@ -209,12 +221,6 @@ public class Player implements Entity {
         updateShape();
     }
     
-    /*
-     * Sets onGround depending on if the player is on the ground or not
-     * 
-     * 
-     * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE
-     */
     public void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
     }

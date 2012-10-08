@@ -6,7 +6,6 @@ import java.util.Map;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.tiled.TiledMap;
 
 import com.google.common.collect.Lists;
@@ -24,7 +23,6 @@ public class TileWorld implements GameWorld {
     private Map<Shape, Entity> touchingBoxes;
 
     private TiledMap map;
-    private Vector2f curPosition = new Vector2f(0, 0);
 
     public TileWorld(TiledMap map) {
         // Get width/height
@@ -98,9 +96,9 @@ public class TileWorld implements GameWorld {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, int offsetX, int offsetY) {
         g.pushTransform();
-        map.render((int) curPosition.x, (int) curPosition.y);
+        map.render(offsetX, offsetY);
         g.resetTransform();
         g.popTransform();
     }
