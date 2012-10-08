@@ -21,28 +21,28 @@ public class Player implements Entity {
     private GravityGameController game;
     
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
-    private final float JUMP_POWER = 1f;
-    private final float MOVEMENT_INCREMENT = 1f / 2f;
-    private final float MAX_HEALTH = 10;
-    private final float MAX_VEL = 100f;
-    private final float VEL_DAMP = 0.5f;
-    private final float GRAVITY = 1.0f / 500f;
+    private final float           JUMP_POWER         = 1f;
+    private final float           MOVEMENT_INCREMENT = 1f / 2f;
+    private final float           MAX_HEALTH         = 10;
+    private final float           MAX_VEL            = 100f;
+    private final float           VEL_DAMP           = 0.5f;
+    private final float           GRAVITY            = 1.0f / 500f;
     
-    private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 12f, 30f);
+    private final Shape           BASE_SHAPE         = new Rectangle(1f, 1f, 12f, 30f);
     
     // PLAYER CURRENT VALUES
-    private GameWorld map;
+    private GameWorld             map;
     
     // position and magnitude
-    private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(0, 512);
-    private Vector2f velocity = new Vector2f(0, 0);
-    private Vector2f facing = new Vector2f(0, 1);
-    private float health;
-    private Shape myShape;
+    private Vector2f              acceleration       = new Vector2f(0, 0);
+    private Vector2f              position           = new Vector2f(0, 512);
+    private Vector2f              velocity           = new Vector2f(0, 0);
+    private Vector2f              facing             = new Vector2f(0, 1);
+    private float                 health;
+    private Shape                 myShape;
     
     // GAME STATE STUFF
-    private boolean onGround = true;
+    private boolean               onGround           = true;
     
     public Player(GameWorld map, GravityGameController game) {
         health = MAX_HEALTH;
@@ -213,7 +213,7 @@ public class Player implements Entity {
      * Sets onGround depending on if the player is on the ground or not
      * 
      * 
-     * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE >>>>>>> 578f54515a017ccc7211c613d175bbac8740860c
+     * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE
      */
     public void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
