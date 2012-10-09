@@ -18,19 +18,12 @@ public class PlayerRenderer implements Renderer {
     private Image bunnyPlayerRun4;
     private Image bunnyPlayerRun5;
     private Image bunnyPlayerRun6;
-    private Image bunnyPlayerBack;
     private Image bunnyPlayerRunBack1;
     private Image bunnyPlayerRunBack2;
     private Image bunnyPlayerRunBack3;
     private Image bunnyPlayerRunBack4;
     private Image bunnyPlayerRunBack5;
     private Image bunnyPlayerRunBack6;
-    private Image bunnyPlayerJump1;
-    private Image bunnyPlayerJump2;
-    private Image bunnyPlayerJump3;
-    private Image bunnyPlayerJump4;
-    private Image bunnyPlayerJump5;
-    private Image bunnyPlayerJump6;
     private Image bunnyPlayerDuck1;
     private Image bunnyPlayerDuck2;
     private Image bunnyPlayerDuck3;
@@ -39,8 +32,7 @@ public class PlayerRenderer implements Renderer {
     private Image lastImage;
     private List<Image> runningBunny;
     private List<Image> runningBackBunny;
-    private List<Image> jumpingBunny;
-    private List<Image> JumpingBackBunny;
+    private List<Image> duckingBunny;
     private int tweener;
 
     public PlayerRenderer(Player player) {
@@ -48,7 +40,7 @@ public class PlayerRenderer implements Renderer {
         try {
             runningBunny = Lists.newArrayList();
             runningBackBunny = Lists.newArrayList();
-            jumpingBunny = Lists.newArrayList();
+            duckingBunny = Lists.newArrayList();
 
             bunnyPlayer = new Image("./assets/BunnyAssets/yellowbunnyStand.png");
             runningBunny.add(bunnyPlayerRun1 = new Image("./assets/BunnyAssets/yellowbunnyRun1.png"));
@@ -57,10 +49,9 @@ public class PlayerRenderer implements Renderer {
             runningBunny.add(bunnyPlayerRun4 = new Image("./assets/BunnyAssets/yellowbunnyRun4.png"));
             runningBunny.add(bunnyPlayerRun5 = new Image("./assets/BunnyAssets/yellowbunnyRun5.png"));
             runningBunny.add(bunnyPlayerRun6 = new Image("./assets/BunnyAssets/yellowbunnyRun6.png"));
-            bunnyPlayerDuck1 = new Image("./assets/BunnyAssets/bunnyDuck1.png");
-            bunnyPlayerDuck2 = new Image("./assets/BunnyAssets/bunnyDuck2.png");
-            bunnyPlayerDuck3 = new Image("./assets/BunnyAssets/bunnyDuck3.png");
-            bunnyPlayerBack = new Image("./assets/BunnyAssets/bunnyStandBack.png");
+            duckingBunny.add(bunnyPlayerDuck1 = new Image("./assets/BunnyAssets/bunnyDuck1.png"));
+            duckingBunny.add(bunnyPlayerDuck2 = new Image("./assets/BunnyAssets/bunnyDuck2.png"));
+            duckingBunny.add(bunnyPlayerDuck3 = new Image("./assets/BunnyAssets/bunnyDuck3.png"));
             runningBackBunny.add(bunnyPlayerRunBack1 = new Image("./assets/BunnyAssets/yellowbunnyRunBack1.png"));
             runningBackBunny.add(bunnyPlayerRunBack2 = new Image("./assets/BunnyAssets/yellowbunnyRunBack2.png"));
             runningBackBunny.add(bunnyPlayerRunBack3 = new Image("./assets/BunnyAssets/yellowbunnyRunBack3.png"));
