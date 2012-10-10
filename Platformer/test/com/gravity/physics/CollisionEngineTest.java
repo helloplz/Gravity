@@ -1,4 +1,4 @@
-package com.gravity.player;
+package com.gravity.physics;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,17 +6,15 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
 import com.gravity.map.TileWorldEntity;
-import com.gravity.physics.Collision;
-import com.gravity.physics.EntityPhysics;
 
-public class EntityPhysicsTest {
+public class CollisionEngineTest {
     
     @Test
     public void testCornerCollisions() {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(8, 3, 10, 5);
         
-        Collision collision = EntityPhysics.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
         Assert.assertArrayEquals(new Integer[] { 2 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0 }, collision.collisionsB.toArray());
     }
@@ -26,7 +24,7 @@ public class EntityPhysicsTest {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(0, 3, 10, 5);
         
-        Collision collision = EntityPhysics.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
         Assert.assertArrayEquals(new Integer[] { 2, 3 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0, 1 }, collision.collisionsB.toArray());
     }
@@ -36,7 +34,7 @@ public class EntityPhysicsTest {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(-2, 4, 14, 9);
         
-        Collision collision = EntityPhysics.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
         Assert.assertArrayEquals(new Integer[] { 2, 3 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0, 1 }, collision.collisionsB.toArray());
     }
