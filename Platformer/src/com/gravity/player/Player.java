@@ -132,7 +132,7 @@ public class Player implements Entity {
             Entity them = c.getOtherEntity(this);
             
             if ((them.getShape(millis) instanceof Rectangle)) {
-                terrainCollision(them, millis);
+                terrainCollision(c, millis);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
@@ -148,12 +148,12 @@ public class Player implements Entity {
     /**
      * Handles collision with terrain
      */
-    private void terrainCollision(Entity collidee, int millis) {
+    private void terrainCollision(Collision collidee, int millis) {
         // position.add(velocity.scale((float) (millis - (10000.0 / 1000))));
         // updateShape();
         // If I'm overlapping their xcoord
         Shape sh = getShape(millis);
-        Shape oth = collidee.getShape(millis);
+        Shape oth = collidee.getOtherEntity(this).getShape(millis);
         if (sh.getMaxX() >= oth.getMinX()) {
             // collision right
             velocity.x = 0;

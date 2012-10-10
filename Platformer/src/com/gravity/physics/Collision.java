@@ -2,8 +2,6 @@ package com.gravity.physics;
 
 import java.util.Set;
 
-import org.newdawn.slick.geom.Vector2f;
-
 /**
  * Represents a collision at a certain point in time between two entities
  * 
@@ -14,22 +12,11 @@ public class Collision {
     public final Entity entityA, entityB;
     public final int    time;
     public final Set<Integer> collisionsA, collisionsB;
-    public final Vector2f     position;
-    
-    public Collision(Entity entityA, Entity entityB, int time, Vector2f position) {
-        this.entityA = entityA;
-        this.entityB = entityB;
-        this.time = time;
-        this.position = position;
-        collisionsA = null;
-        collisionsB = null;
-    }
     
     public Collision(Entity entityA, Entity entityB, int time, Set<Integer> collisionA, Set<Integer> collisionB) {
         this.entityA = entityA;
         this.entityB = entityB;
         this.time = time;
-        this.position = null;
         this.collisionsA = collisionA;
         this.collisionsB = collisionB;
     }
