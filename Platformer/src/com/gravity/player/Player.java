@@ -21,6 +21,7 @@ public class Player implements Entity {
     private GravityGameController game;
 
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
+
     private final float JUMP_POWER = 1f;
     private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
@@ -35,7 +36,7 @@ public class Player implements Entity {
 
     // position and magnitude
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(0, 512);
+    private Vector2f position = new Vector2f(72, 512);
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
@@ -44,12 +45,24 @@ public class Player implements Entity {
     // GAME STATE STUFF
     private boolean onGround = true;
 
-    public Player(GameWorld map, GravityGameController game) {
+    private final String name;
+
+    public Player(GameWorld map, GravityGameController game, String name) {
         health = MAX_HEALTH;
         velocity = new Vector2f(0, 0);
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Player [name=");
+        builder.append(name);
+        builder.append("]");
+        return builder.toString();
     }
 
     // //////////////////////////////////////////////////////////////////////////
