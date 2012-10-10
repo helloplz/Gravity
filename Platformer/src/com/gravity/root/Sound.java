@@ -12,7 +12,7 @@ public final class Sound {
 
     static {
         try {
-            gameMusic = new Music("./assets/Sound/Forminas.xm");
+            gameMusic = new Music("./assets/Sound/Forminas.wav");
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
