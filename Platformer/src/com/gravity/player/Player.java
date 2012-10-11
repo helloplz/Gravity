@@ -1,6 +1,7 @@
 package com.gravity.player;
 
 import java.util.List;
+import java.util.Set;
 
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -14,9 +15,11 @@ import com.gravity.physics.Entity;
 
 public class Player implements Entity {
 
-    public enum Movement {
+    public static enum Movement {
         LEFT, RIGHT, STOP
     }
+
+    public static int TOP_LEFT = 0, TOP_RIGHT = 1, BOT_RIGHT = 2, BOT_LEFT = 3;
 
     private GravityGameController game;
 
@@ -29,14 +32,16 @@ public class Player implements Entity {
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
 
-    private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 12f, 30f);
+    private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
 
     // PLAYER CURRENT VALUES
     private GameWorld map;
 
     // position and magnitude
+
+    // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(72, 512);
+    private Vector2f position = new Vector2f(50, 512);
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
@@ -133,7 +138,7 @@ public class Player implements Entity {
             Entity them = c.getOtherEntity(this);
 
             if ((them.getShape(millis) instanceof Rectangle)) {
-                terrainCollision(them, millis);
+                terrainCollision(c, millis);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
@@ -149,32 +154,35 @@ public class Player implements Entity {
     /**
      * Handles collision with terrain
      */
-    private void terrainCollision(Entity collidee, int millis) {
+    private void terrainCollision(Collision collidee, int millis) {
         // position.add(velocity.scale((float) (millis - (10000.0 / 1000))));
         // updateShape();
         // If I'm overlapping their xcoord
         Shape sh = getShape(millis);
-        Shape oth = collidee.getShape(millis);
-        if (sh.getMaxX() >= oth.getMinX()) {
+        Shape oth = collidee.getOtherEntity(this).getShape(millis);
+        Set<Integer> points = collidee.getMyCollisions(this);
+        if (points.contains(TOP_RIGHT) && points.contains(BOT_RIGHT)) {
             // collision right
             velocity.x = 0;
-            position.x -= sh.getMaxX() - oth.getMinX() + 1;
-        } else if (sh.getMinX() <= oth.getMaxX()) {
+        } else if (points.contains(TOP_LEFT) && points.contains(BOT_LEFT)) {
             // collision left
             velocity.x = 0;
-            position.x += oth.getMaxX() - sh.getMinX() + 1;
         }
         // If I'm overlapping their ycoord
-        else if (sh.getMaxY() >= oth.getMinY()) {
+        else if (points.contains(TOP_LEFT) && points.contains(TOP_RIGHT)) {
             // collision top
             velocity.y = 0;
-            position.y -= sh.getMaxY() - oth.getMinY() + 1;
             onGround = false;
-        } else if (sh.getMinY() <= oth.getMaxY()) {
+        } else if (points.contains(BOT_LEFT) && points.contains(BOT_RIGHT)) {
             // collision bottom
             velocity.y = 0;
-            position.y += oth.getMaxY() - sh.getMinY() + 1;
             onGround = true;
+        } else if (points.contains(TOP_LEFT) || points.contains(BOT_LEFT)) {
+            velocity.y = 0;
+            velocity.x = Math.abs(velocity.x);
+        } else if (points.contains(TOP_RIGHT) || points.contains(BOT_RIGHT)) {
+            velocity.y = 0;
+            velocity.x = -Math.abs(velocity.x);
         } else {
             throw new RuntimeException("No overlap detected: " + sh.toString() + " with " + oth.toString());
         }
@@ -194,9 +202,9 @@ public class Player implements Entity {
     // //////////////////////////////////////////////////////////////////////////
     @Override
     public void tick(int millis) {
+        updatePosition(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
-        updatePosition(millis);
     }
 
     public void updateAcceleration(float millis) {

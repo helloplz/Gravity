@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Vector2f;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -44,8 +43,6 @@ public class CollisionEngine {
         // until everything works out. Then update everybody
         Preconditions.checkArgument(ticks > 0, "Number of ticks must be positive: ticks=" + ticks);
         
-        // Map<Entity, List<Collision>> collisions;
-        
         int increment = ticks < PARTS_PER_TICK ? 1 : ticks / PARTS_PER_TICK;
         Map<Entity, List<Collision>> collisions;
         for (int time = increment; time <= ticks; time += increment) {
@@ -55,11 +52,16 @@ public class CollisionEngine {
                 for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
                     c.getKey().handleCollisions(increment, c.getValue());
                 }
-                collisions = computeCollisions(increment);
-                if (!collisions.isEmpty()) { // TODO: should this be if or while?
-                    for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
-                        c.getKey().rehandleCollisions(increment, c.getValue());
+                for (int tries = 0; tries < 3; tries++) {
+                    collisions = computeCollisions(increment);
+                    if (!collisions.isEmpty()) {
+                        for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
+                            c.getKey().rehandleCollisions(increment, c.getValue());
+                        }
                     }
+                }
+                if (!computeCollisions(increment).isEmpty()) {
+                    throw new RuntimeException("Could not properly rehandle collisions after 3 rehandles!");
                 }
             }
             for (Entity e : entities) {
@@ -69,9 +71,8 @@ public class CollisionEngine {
         
     }
     
+    // Package private for testing
     Map<Entity, List<Collision>> computeCollisions(int ticks) {
-        int entitiesSize = entities.size();
-        int terrainSize = terrainNoCalls.size();
         int i, j;
         Map<Entity, List<Collision>> collisions = Maps.newHashMap();
         Collision coll;
@@ -115,18 +116,9 @@ public class CollisionEngine {
         }
     }
     
+    // Package private for testing
     static boolean isIntersecting(float[] p1, float[] p2, float[] p3, float[] p4) {
         double unknownA, unknownB;
-        /*
-         * Intersection formula used: (x4 - x3)(y1 - y3) - (y4 - y3)(x1 - x3) UA = --------------------------------------- (y4 - y3)(x2 - x1) - (x4 -
-         * x3)(y2 - y1)
-         * 
-         * (x2 - x1)(y1 - y3) - (y2 - y1)(x1 - x3) UB = --------------------------------------- (y4 - y3)(x2 - x1) - (x4 - x3)(y2 - y1)
-         * 
-         * if UA and UB are both between 0 and 1 then the lines intersect.
-         * 
-         * Source: http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-         */
         unknownA = (((p4[0] - p3[0]) * (double) (p1[1] - p3[1])) - ((p4[1] - p3[1]) * (p1[0] - p3[0])))
                 / (((p4[1] - p3[1]) * (p2[0] - p1[0])) - ((p4[0] - p3[0]) * (p2[1] - p1[1])));
         unknownB = (((p2[0] - p1[0]) * (double) (p1[1] - p3[1])) - ((p2[1] - p1[1]) * (p1[0] - p3[0])))
@@ -138,6 +130,7 @@ public class CollisionEngine {
         return false;
     }
     
+    // Package private for testing
     static Collision collisionLines(Entity entityA, Entity entityB, int time) {
         // @formatter:off
         /*
@@ -229,25 +222,26 @@ public class CollisionEngine {
     private static void getIntersectPoints(Shape a, Shape b, Map<Integer, List<Integer>> aCollisions, Set<Integer> aPoints, Set<Integer> bPoints) {
         int aLength = a.getPointCount();
         int bLength = b.getPointCount();
-        float[] centerA = a.getCenter();
         float[] centerB = b.getCenter();
-        Vector2f centerV = new Vector2f(centerB[0] - centerA[0], centerB[1] - centerA[1]);
         for (int aLine : aCollisions.keySet()) {
             List<Integer> bLines = aCollisions.get(aLine);
             for (int bLine : bLines) {
                 List<Integer> aAdj;
                 if (bLines.contains((bLine + 1) % bLength)) {
+                    // line-vertex collision
                     aPoints.add(aLine);
                     aPoints.add((aLine + 1) % aLength);
                     bPoints.add((bLine + 1) % bLength);
                 } else if (bLines.contains((bLine + 2) % bLength)) {
                     if (isIntersecting(centerB, b.getPoint((bLine + 1) % bLength), a.getPoint(aLine), a.getPoint((aLine + 1) % aLength))) {
+                        // line-line collision
                         aPoints.add(aLine);
                         aPoints.add((aLine + 1) % aLength);
                         bPoints.add((bLine + 1) % bLength);
                         bPoints.add((bLine + 2) % bLength);
                     }
                 } else if ((aAdj = aCollisions.get((aLine + 1) % aLength)) != null) {
+                    // vertex-vertex collision
                     if (aAdj.contains((bLine + 1) % bLength)) {
                         aPoints.add((aLine + 1) % aLength);
                         bPoints.add((bLine + 1) % bLength);
