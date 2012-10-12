@@ -17,27 +17,29 @@ import com.gravity.physics.TileWorldEntity;
 public class TileWorld implements GameWorld {
     public final int height;
     public final int width;
-    
+
     public final int tileHeight;
     public final int tileWidth;
-    
+
     private List<Entity> entities;
-    
+
     private TiledMap map;
-    
-    private static final int TILES_LAYER_ID = 0;
-    private static final int PERSPECTIVE_LAYER_ID = 1;
-    private static final int SPIKES_LAYER_ID = 2;
-    
+
+    private final int TILES_LAYER_ID;
+    private final int SPIKES_LAYER_ID;
+
     public TileWorld(TiledMap map, GravityGameController controller) {
+        TILES_LAYER_ID = map.getLayerIndex("collisions");
+        SPIKES_LAYER_ID = map.getLayerIndex("spikes");
+
         // Get width/height
         this.tileWidth = map.getTileWidth();
         this.tileHeight = map.getTileHeight();
         this.width = map.getWidth() * tileWidth;
         this.height = map.getHeight() * tileHeight;
-        
+
         this.map = map;
-        
+
         // Iterate over and find all tiles
         int layerId = TILES_LAYER_ID; // Layer ID to search at
         entities = Lists.newArrayList();
@@ -49,12 +51,12 @@ public class TileWorld implements GameWorld {
                     Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
                     Rectangle g = new Rectangle(i * tileWidth, j * tileHeight + 3, tileWidth, tileHeight);
                     Entity e = new TileWorldEntity(r);
-                    
+
                     entities.add(e);
                 }
             }
         }
-        
+
         if (map.getLayerCount() > SPIKES_LAYER_ID) {
             layerId = SPIKES_LAYER_ID;
             for (int i = 0; i < map.getWidth(); i++) {
@@ -64,15 +66,15 @@ public class TileWorld implements GameWorld {
                         // Tile exists at this spot
                         Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
                         Entity e = new SpikeEntity(controller, r);
-                        
+
                         entities.add(e);
                     }
                 }
             }
         }
-        
+
     }
-    
+
     @Override
     public List<Entity> getCollisions(Shape shape) {
         List<Entity> collisions = Lists.newArrayList();
@@ -83,7 +85,7 @@ public class TileWorld implements GameWorld {
         }
         return collisions;
     }
-    
+
     @Override
     public List<Shape> getTouching(Shape shape) {
         List<Shape> touches = Lists.newArrayList();
@@ -94,22 +96,22 @@ public class TileWorld implements GameWorld {
         }
         return touches;
     }
-    
+
     @Override
     public int getHeight() {
         return height;
     }
-    
+
     @Override
     public int getWidth() {
         return width;
     }
-    
+
     @Override
     public List<Entity> getTerrainEntities() {
         return entities;
     }
-    
+
     @Override
     public void render(Graphics g, int offsetX, int offsetY) {
         g.pushTransform();
