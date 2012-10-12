@@ -18,6 +18,7 @@ public class MainMenuState extends BasicGameState {
     
     private GameContainer container;
     private StateBasedGame game;
+    
     private Rectangle startGame;
     private Rectangle credits;
     
