@@ -23,8 +23,8 @@ public class CollisionEngine {
     public CollisionEngine(GameWorld map) {
         gameMap = map;
         entities = Sets.newIdentityHashSet();
-        terrainNoCalls = map.getTerrainEntities();
-        terrainCallColls = Lists.newArrayList();
+        terrainNoCalls = map.getTerrainEntitiesNoCalls();
+        terrainCallColls = map.getTerrainEntitiesCallColls();
     }
     
     public boolean addEntity(Entity entity) {
@@ -33,6 +33,14 @@ public class CollisionEngine {
     
     public boolean removeEntity(Entity entity) {
         return entities.remove(entity);
+    }
+    
+    public boolean addTerrainWithCollisions(Entity entity) {
+        return terrainCallColls.add(entity);
+    }
+    
+    public boolean removeTerrainWithCollisions(Entity entity) {
+        return terrainCallColls.remove(entity);
     }
     
     private static final int PARTS_PER_TICK = 5;
@@ -92,6 +100,8 @@ public class CollisionEngine {
                 }
             }
         }
+        //@formatter:off
+        /*//No rabbit-on-rabbit business
         for (Entity a : entities) {
             for (Entity b : entities) {
                 if (a != b) {
@@ -103,6 +113,8 @@ public class CollisionEngine {
                 }
             }
         }
+        */
+        //@formatter:on
         
         return collisions;
     }
@@ -130,7 +142,7 @@ public class CollisionEngine {
     }
     
     // Package private for testing
-    public static Collision collisionLines(Entity entityA, Entity entityB, int time) {
+    static Collision collisionLines(Entity entityA, Entity entityB, int time) {
         
         Shape a = entityA.getShape(time);
         Shape b = entityB.getShape(time);

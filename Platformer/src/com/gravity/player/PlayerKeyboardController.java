@@ -11,109 +11,110 @@ import com.gravity.root.GameSounds;
  */
 public class PlayerKeyboardController {
     private Player player;
-
+    
     private int left, right, jump, misc;
     private boolean lefting, righting;
-
+    
     public PlayerKeyboardController(Player player) {
         this.player = player;
         lefting = false;
         righting = false;
     }
-
+    
     public enum Control {
         LEFT, RIGHT, JUMP, MISC;
-
+        
         public static int size() {
-            return 4;
+            // MISC is not used
+            return 3;
         }
-
+        
         public static Control getById(int id) {
             switch (id) {
-            case 0:
-                return LEFT;
-            case 1:
-                return RIGHT;
-            case 2:
-                return JUMP;
-            case 3:
-                return MISC;
-            default:
-                throw new IllegalArgumentException("No Control id " + id);
+                case 0:
+                    return LEFT;
+                case 1:
+                    return RIGHT;
+                case 2:
+                    return JUMP;
+                case 3:
+                    return MISC;
+                default:
+                    throw new IllegalArgumentException("No Control id " + id);
             }
         }
     }
-
+    
     public int getControl(Control ctrl) {
         switch (ctrl) {
-        case JUMP:
-            return getJump();
-        case LEFT:
-            return getLeft();
-        case MISC:
-            return getMisc();
-        case RIGHT:
-            return getRight();
-        default:
-            throw new RuntimeException("Unknown Control: " + ctrl.toString());
+            case JUMP:
+                return getJump();
+            case LEFT:
+                return getLeft();
+            case MISC:
+                return getMisc();
+            case RIGHT:
+                return getRight();
+            default:
+                throw new RuntimeException("Unknown Control: " + ctrl.toString());
         }
     }
-
+    
     public void setControl(Control ctrl, int key) {
         switch (ctrl) {
-        case JUMP:
-            setJump(key);
-            break;
-        case LEFT:
-            setLeft(key);
-            break;
-        case MISC:
-            setMisc(key);
-            break;
-        case RIGHT:
-            setRight(key);
-            break;
-        default:
-            throw new RuntimeException("Unknown Control: " + ctrl.toString());
+            case JUMP:
+                setJump(key);
+                break;
+            case LEFT:
+                setLeft(key);
+                break;
+            case MISC:
+                setMisc(key);
+                break;
+            case RIGHT:
+                setRight(key);
+                break;
+            default:
+                throw new RuntimeException("Unknown Control: " + ctrl.toString());
         }
     }
-
+    
     public int getLeft() {
         return left;
     }
-
+    
     public int getRight() {
         return right;
     }
-
+    
     public int getJump() {
         return jump;
     }
-
+    
     public int getMisc() {
         return misc;
     }
-
+    
     public PlayerKeyboardController setLeft(int key) {
         left = key;
         return this;
     }
-
+    
     public PlayerKeyboardController setRight(int key) {
         right = key;
         return this;
     }
-
+    
     public PlayerKeyboardController setJump(int key) {
         jump = key;
         return this;
     }
-
+    
     public PlayerKeyboardController setMisc(int key) {
         misc = key;
         return this;
     }
-
+    
     /**
      * Handle a key press event.
      * 
@@ -132,11 +133,11 @@ public class PlayerKeyboardController {
             player.jump(true);
             GameSounds.playSickRabbitBeat();
             return true;
-
+            
         }
         return false;
     }
-
+    
     public boolean handleKeyRelease(int key) {
         if (key == left) {
             lefting = false;
@@ -156,7 +157,7 @@ public class PlayerKeyboardController {
         }
         return false;
     }
-
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

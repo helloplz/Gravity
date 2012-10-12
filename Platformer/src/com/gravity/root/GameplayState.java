@@ -120,7 +120,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
 
     private float getOffsetXDelta() {
-        if (totalTime < 1000) {
+        if (totalTime < 3000) {
             return 0;
         }
         return 0.05f; // + (float) (totalTime - 1000) / (1000 * 1000);
@@ -162,8 +162,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         int akey, bkey;
         akey = controllerA.getControl(ctrl);
         bkey = controllerB.getControl(ctrl);
-        controllerA.setControl(ctrl, akey);
-        controllerB.setControl(ctrl, bkey);
+        controllerA.setControl(ctrl, bkey);
+        controllerB.setControl(ctrl, akey);
     }
 
     @Override
