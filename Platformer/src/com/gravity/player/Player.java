@@ -29,9 +29,8 @@ public class Player implements Entity {
 
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
 
-    private final float JUMP_POWER = 2f / 3f;
-    private final float MOVEMENT_INCREMENT = 1f / 4f;
-
+    private final float JUMP_POWER = 0.7f;
+    private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
@@ -147,9 +146,11 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
 
-            if ((them.getShape(millis) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(millis).getPointCount() == 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
+                Shape shape = them.getShape(millis);
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
         }
@@ -161,7 +162,8 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
 
-            if ((them.getShape(ticks) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(ticks).getPointCount() != 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
@@ -213,105 +215,89 @@ public class Player implements Entity {
             if (tl) {
                 // If moving left
                 if (velocity.x < 0) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    // position.x -= velocity.copy().scale(millis).x;
+                    velocity.x = 0;
                 }
                 // If moving up
                 if (velocity.y < 0) {
-                    position.y -= velocity.copy().scale(millis).y;
+                    // position.y -= velocity.copy().scale(millis).y;
+                    velocity.y = 0;
                 }
             } else if (tr) {
                 // If moving right
                 if (velocity.x > 0) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    // position.x -= velocity.copy().scale(millis).x;
+                    velocity.x = 0;
                 }
                 // If moving up
                 if (velocity.y < 0) {
-                    position.y -= velocity.copy().scale(millis).y;
+                    // position.y -= velocity.copy().scale(millis).y;
+                    velocity.y = 0;
                 }
             } else if (br) {
                 // If moving right
                 if (velocity.x > 0) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    // position.x -= velocity.copy().scale(millis).x;
+                    velocity.x = 0;
                 }
                 // If moving down
                 if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
+                    // position.y -= velocity.copy().scale(millis).y;
+                    velocity.y = 0;
                 }
             } else if (bl) {
                 // If moving left
                 if (velocity.x < 0) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    // position.x -= velocity.copy().scale(millis).x;
+                    velocity.x = 0;
                 }
                 // If moving down
                 if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
+                    // position.y -= velocity.copy().scale(millis).y;
+                    velocity.y = 0;
                 }
-            }
-            // If moving up
-            if (velocity.y < 0) {
-                position.y -= velocity.copy().scale(millis).y;
-            } else if (tr) {
-                // If moving right
-                if (velocity.x > 0) {
-                    position.x -= velocity.copy().scale(millis).x;
-                }
-                // If moving up
-                if (velocity.y < 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
-            } else if (br) {
-                // If moving right
-                if (velocity.x > 0) {
-                    position.x -= velocity.copy().scale(millis).x;
-                }
-                // If moving down
-                if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
-            } else if (bl) {
-                // If moving left
-                if (velocity.x < 0) {
-                    position.x -= velocity.copy().scale(millis).x;
-                }
-                // If moving down
-                if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
+            } else {
+                throw new RuntimeException("Should never hit this line: case 1");
             }
             break;
         case 2:
             // if you hit the ceiling
             if (tl && tr) {
-                position.y -= velocity.copy().scale(millis).y;
+                // position.y -= velocity.copy().scale(millis).y;
+                velocity.y = 0;
                 onGround = false;
             }
             // if you hit the floor
             else if (bl && br) {
-                position.y -= velocity.copy().scale(millis).y;
+                velocity.y = 0;
+                // position.y -= velocity.copy().scale(millis).y;
                 onGround = true;
             }
             // if you hit the right wall
             else if (tr && br) {
-                position.x -= velocity.copy().scale(millis).x;
+                velocity.x = 0;
+                // position.x -= velocity.copy().scale(millis).x;
             }
             // if you hit the left wall
             else if (tl && bl) {
-                position.x -= velocity.copy().scale(millis).x;
+                velocity.x = 0;
+                // position.x -= velocity.copy().scale(millis).x;
             }
             // if you hit opposite corners
             else {
-                position.sub(velocity.copy().scale(millis));
+                // position.sub(velocity.copy().scale(millis));
                 velocity.x = 0;
                 velocity.y = 0;
             }
             break;
-        case 3:
-            // Collision on 2 sides
-            position.sub(velocity.copy().scale(millis));
+        default:
+            // Collision on 2 or more sides
+            // position.sub(velocity.copy().scale(millis));
             velocity.x = 0;
             velocity.y = 0;
+            break;
         }
-        updateShape();
+        // updateShape();
     }
 
     public void takeDamage(float damage) {
