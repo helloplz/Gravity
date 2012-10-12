@@ -3,6 +3,7 @@ package com.gravity.map;
 import java.util.List;
 import java.util.Map;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -55,9 +56,11 @@ public class TileWorld implements GameWorld {
                 if (tileId != 0) {
                     // Tile exists at this spot
                     Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    Rectangle g = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    g.grow(3, 3);
                     Entity e = new TileWorldEntity(r);
                     
-                    touchingBoxes.put(r, e);
+                    touchingBoxes.put(g, e);
                     entities.add(e);
                 }
             }
@@ -94,11 +97,11 @@ public class TileWorld implements GameWorld {
     }
     
     @Override
-    public List<Entity> getTouching(Shape shape) {
-        List<Entity> touches = Lists.newArrayList();
+    public List<Shape> getTouching(Shape shape) {
+        List<Shape> touches = Lists.newArrayList();
         for (Shape terrain : touchingBoxes.keySet()) {
             if (shape.intersects(terrain)) {
-                touches.add(touchingBoxes.get(terrain));
+                touches.add(terrain);
             }
         }
         return touches;
@@ -122,8 +125,18 @@ public class TileWorld implements GameWorld {
     @Override
     public void render(Graphics g, int offsetX, int offsetY) {
         g.pushTransform();
-        map.render(offsetX, offsetY);
+        g.translate(offsetX, offsetY);
+        g.setColor(Color.red);
+        for (Entity e : entities) {
+            g.draw(e.getShape(0));
+        }
+        g.setColor(Color.green);
+        for (Shape s : touchingBoxes.keySet()) {
+            g.draw(s);
+        }
+        g.setColor(Color.white);
         g.resetTransform();
         g.popTransform();
+        map.render(offsetX, offsetY);
     }
 }
