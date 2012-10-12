@@ -2,6 +2,7 @@ package com.gravity.root;
 
 import java.util.Random;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -76,6 +77,28 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         rendererMap.render(g, (int) offsetX, (int) offsetY);
         rendererB.render(g, (int) offsetX, (int) offsetY);
         rendererA.render(g, (int) offsetX, (int) offsetY);
+        g.pushTransform();
+        g.translate(32, 32);
+        g.fillRoundRect(0, 0, 320, 64, 10);
+        renderControls(g, "Pink", controllerA);
+        g.resetTransform();
+        g.popTransform();
+        
+        g.pushTransform();
+        g.translate(672, 32);
+        g.fillRoundRect(0, 0, 320, 64, 10);
+        renderControls(g, "Yellow", controllerB);
+        g.resetTransform();
+        g.popTransform();
+    }
+    
+    public void renderControls(Graphics g, String playername, PlayerKeyboardController controller) {
+        g.setColor(Color.black);
+        g.drawString(playername, 12, 12);
+        g.drawString("Jump: " + Input.getKeyName(controller.getJump()), 120, 12);
+        g.drawString("Left: " + Input.getKeyName(controller.getLeft()), 50, 36);
+        g.drawString("Right: " + Input.getKeyName(controller.getRight()), 190, 36);
+        g.setColor(Color.white);
     }
     
     @Override
