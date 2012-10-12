@@ -35,8 +35,9 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private TileWorldRenderer rendererMap;
     private PlayerRenderer rendererA, rendererB;
     private PlayerKeyboardController controllerA, controllerB;
-    private CollisionEngine collisions;
+    private CollisionEngine collider;
     private GameContainer container;
+    private StateBasedGame game;
     private final Random rand = new Random();
     
     private float offsetX; // Current offset x... should be negative
@@ -47,6 +48,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
+        this.game = game;
         resetState();
         GameSounds.playBGM();
     }
@@ -61,10 +63,10 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         controllerA = new PlayerKeyboardController(playerA).setLeft(Input.KEY_A).setRight(Input.KEY_D).setJump(Input.KEY_W).setMisc(Input.KEY_S);
         controllerB = new PlayerKeyboardController(playerB).setLeft(Input.KEY_LEFT).setRight(Input.KEY_RIGHT).setJump(Input.KEY_UP)
                 .setMisc(Input.KEY_DOWN);
-        collisions = new CollisionEngine(map);
+        collider = new CollisionEngine(map);
         // collisions.addEntity(playerA);
-        collisions.addEntity(playerA);
-        collisions.addEntity(playerB);
+        collider.addEntity(playerA);
+        collider.addEntity(playerB);
         offsetX = 0;
         offsetY = 0;
         maxOffsetX = (map.getWidth() - container.getWidth()) * -1;
@@ -104,7 +106,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         totalTime += delta;
-        collisions.update(delta);
+        collider.update(delta);
         offsetX -= delta * getOffsetXDelta();
         offsetX = Math.max(offsetX, maxOffsetX);
         // playerB.tick(delta);
@@ -154,7 +156,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     
     @Override
     public void playerDies(Player player) {
-        // TODO Auto-generated method stub
+        game.enterState(GameOverState.ID);
     }
     
     @Override
