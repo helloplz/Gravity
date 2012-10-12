@@ -52,7 +52,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
 
     public void resetState() throws SlickException {
-        map = new TileWorld(new TiledMap("assets/game_map_final.tmx"), this);
+        map = new TileWorld(new TiledMap("assets/level2.tmx"), this);
         playerA = new Player(map, this, "pink", new Vector2f(256, 512));
         playerB = new Player(map, this, "yellow", new Vector2f(224, 512));
         rendererMap = new TileWorldRenderer(map);
@@ -120,7 +120,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
 
     private float getOffsetXDelta() {
-        if (totalTime < 3000) {
+        if (totalTime < 1000) {
             return 0;
         }
         return 0.05f; // + (float) (totalTime - 1000) / (1000 * 1000);
@@ -162,8 +162,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         int akey, bkey;
         akey = controllerA.getControl(ctrl);
         bkey = controllerB.getControl(ctrl);
-        controllerA.setControl(ctrl, bkey);
-        controllerB.setControl(ctrl, akey);
+        controllerA.setControl(ctrl, akey);
+        controllerB.setControl(ctrl, bkey);
     }
 
     @Override
