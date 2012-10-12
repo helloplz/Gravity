@@ -130,7 +130,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     
     private void checkDeath(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
-        if (pos.x + offsetX2 - 32 < 0) {
+        if (pos.x + offsetX2 + 32 < 0) {
             playerDies(player);
         }
     }

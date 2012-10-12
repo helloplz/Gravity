@@ -21,7 +21,7 @@ public class GameOverState extends BasicGameState {
     
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-        g.drawString("Game Over!", 50, 100);
+        g.drawString("Game Over! (One of the bunnies fell off the screen! Why would you do that?)", 50, 100);
         g.draw(restart = new Rectangle(48, 148, 200, 48));
         g.drawString("Back to main menu...", 50, 150);
     }
