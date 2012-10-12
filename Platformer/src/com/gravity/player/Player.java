@@ -264,34 +264,6 @@ public class Player implements Entity {
         }
     }
     
-    /**
-     * @param me
-     * @param them
-     * @param ticks
-     * @return the overlap (always positive)
-     */
-    private float getXOverlap(Entity me, Entity them, int ticks) {
-        float difX = them.getShape(ticks).getCenterX() - (position.x + velocity.copy().scale(ticks).x);
-        System.out.println("difX = " + difX);
-        float result = Math.abs(difX - ((myShape.getWidth() + them.getShape(ticks).getWidth()) / 2));
-        System.out.println("x overlap = " + result);
-        return result;
-    }
-    
-    /**
-     * @param me
-     * @param them
-     * @param ticks
-     * @return the overlap (always positive)
-     */
-    private float getYOverlap(Entity me, Entity them, int ticks) {
-        float difY = them.getShape(ticks).getCenterY() - (position.y + velocity.copy().scale(ticks).y);
-        System.out.println("difY = " + difY);
-        float result = Math.abs(difY - ((myShape.getHeight() + them.getShape(ticks).getHeight()) / 2));
-        System.out.println("y overlap = " + result);
-        return result;
-    }
-    
     public void takeDamage(float damage) {
         health -= damage;
     }
