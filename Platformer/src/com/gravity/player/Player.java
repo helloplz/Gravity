@@ -34,7 +34,7 @@ public class Player implements Entity {
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
-    private final float GRAVITY = 1.0f / 500f;
+    private final float GRAVITY = 1.0f / 1000f;
     
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
     
@@ -45,7 +45,7 @@ public class Player implements Entity {
     
     // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(50, 512);
+    private Vector2f position;
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
@@ -53,16 +53,19 @@ public class Player implements Entity {
     
     // GAME STATE STUFF
     private boolean onGround = false;
-    
     private final String name;
     
-    public Player(GameWorld map, GravityGameController game, String name) {
+    public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
         health = MAX_HEALTH;
-        velocity = new Vector2f(0, 0);
+        position = startpos;
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
         this.name = name;
+    }
+    
+    public String getName() {
+        return name;
     }
     
     @Override
@@ -79,6 +82,10 @@ public class Player implements Entity {
     // //////////////////////////////////////////////////////////////////////////
     public Vector2f getPosition() {
         return getPosition(0);
+    }
+    
+    public void setPositionX(float x) {
+        position.x = x;
     }
     
     @Override
@@ -140,7 +147,8 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
             
-            if ((them.getShape(millis) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(millis).getPointCount() == 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
@@ -154,7 +162,8 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
             
-            if ((them.getShape(ticks) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(ticks).getPointCount() != 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
@@ -204,79 +213,106 @@ public class Player implements Entity {
         switch (count) {
             case 0:
                 // No collisions
-                System.out.println("handleCollisions should NOT be called with empty collision list");
-                break;
+                throw new RuntimeException("handleCollisions should NOT be called with empty collision list");
             case 1:
                 // If you only hit one corner, we will cancel velocity in the direction of the corner
                 // Origin is in the top left
                 if (tl) {
                     // If moving left
                     if (velocity.x < 0) {
-                        position.x += getXOverlap(this, etl, millis);
+                        
+                        // position.x -= velocity.copy().scale(millis).x;
+                        velocity.x = 0;
                     }
                     // If moving up
                     if (velocity.y < 0) {
-                        position.y += getYOverlap(this, etl, millis);
+                        
+                        // position.y -= velocity.copy().scale(millis).y;
+                        velocity.y = 0;
                     }
                 } else if (tr) {
                     // If moving right
                     if (velocity.x > 0) {
-                        position.x -= getXOverlap(this, etr, millis);
+                        
+                        // position.x -= velocity.copy().scale(millis).x;
+                        velocity.x = 0;
                     }
                     // If moving up
                     if (velocity.y < 0) {
-                        position.y += getYOverlap(this, etr, millis);
+                        
+                        // position.y -= velocity.copy().scale(millis).y;
+                        velocity.y = 0;
                     }
                 } else if (br) {
                     // If moving right
                     if (velocity.x > 0) {
-                        position.x -= getXOverlap(this, ebr, millis);
+                        
+                        // position.x -= velocity.copy().scale(millis).x;
+                        velocity.x = 0;
                     }
                     // If moving down
                     if (velocity.y > 0) {
-                        position.y -= getYOverlap(this, ebr, millis);
+                        
+                        // position.y -= velocity.copy().scale(millis).y;
+                        velocity.y = 0;
                     }
                 } else if (bl) {
                     // If moving left
                     if (velocity.x < 0) {
-                        position.x += getXOverlap(this, ebl, millis);
+                        // position.x -= velocity.copy().scale(millis).x;
+                        velocity.x = 0;
                     }
                     // If moving down
                     if (velocity.y > 0) {
-                        position.y -= getYOverlap(this, ebl, millis);
+                        
+                        // position.y -= velocity.copy().scale(millis).y;
+                        velocity.y = 0;
                     }
+                } else {
+                    throw new RuntimeException("Should never hit this line: case 1");
                 }
                 break;
             case 2:
                 // if you hit the ceiling
                 if (tl && tr) {
-                    position.y += Math.max(getYOverlap(this, etl, millis), getYOverlap(this, etr, millis));
+                    
+                    // position.y -= velocity.copy().scale(millis).y;
+                    velocity.y = 0;
+                    onGround = false;
                 }
                 // if you hit the floor
                 else if (bl && br) {
-                    position.y -= Math.max(getYOverlap(this, ebl, millis), getYOverlap(this, ebr, millis));
+                    
+                    velocity.y = 0;
+                    // position.y -= velocity.copy().scale(millis).y;
+                    onGround = true;
                 }
                 // if you hit the right wall
                 else if (tr && br) {
-                    position.x -= Math.max(getXOverlap(this, etr, millis), getXOverlap(this, ebr, millis));
+                    
+                    velocity.x = 0;
+                    // position.x -= velocity.copy().scale(millis).x;
                 }
                 // if you hit the left wall
                 else if (tl && bl) {
-                    position.x += Math.max(getXOverlap(this, etl, millis), getXOverlap(this, ebl, millis));
+                    velocity.x = 0;
+                    // position.x -= velocity.copy().scale(millis).x;
                 }
                 // if you hit opposite corners
                 else {
                     System.out.println("check opening size!!!");
                     position.sub(velocity.copy().scale(millis));
+                    
                     velocity.x = 0;
                     velocity.y = 0;
                 }
                 break;
-            case 3:
-                // Collision on 2 sides
-                position.sub(velocity.copy().scale(millis));
+            default:
+                // Collision on 2 or more sides
+                // position.sub(velocity.copy().scale(millis));
                 velocity.x = 0;
                 velocity.y = 0;
+                break;
         }
         updateShape();
         System.out.println("new position = " + position.x + ", " + position.y);
@@ -327,15 +363,16 @@ public class Player implements Entity {
         updatePosition(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
-        List<Shape> collisions = map.getTouching(myShape);
+        Shape hitbox = myShape.transform(Transform.createTranslateTransform(0, 5));
+        List<Shape> collisions = map.getTouching(hitbox);
         onGround = false;
         for (Shape e : collisions) {
             Map<Integer, List<Integer>> aCollisions = Maps.newHashMap(), bCollisions = Maps.newHashMap();
-            CollisionEngine.getShapeIntersections(myShape, e, aCollisions, bCollisions);
+            CollisionEngine.getShapeIntersections(hitbox, e, aCollisions, bCollisions);
             Set<Integer> aPoints = Sets.newHashSet();
             Set<Integer> bPoints = Sets.newHashSet();
-            CollisionEngine.getIntersectPoints(myShape, e, aCollisions, aPoints, bPoints);
-            CollisionEngine.getIntersectPoints(e, myShape, bCollisions, bPoints, aPoints);
+            CollisionEngine.getIntersectPoints(hitbox, e, aCollisions, aPoints, bPoints);
+            CollisionEngine.getIntersectPoints(e, hitbox, bCollisions, bPoints, aPoints);
             if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)) {
                 onGround = true;
                 break;

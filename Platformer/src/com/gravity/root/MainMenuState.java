@@ -18,8 +18,8 @@ public class MainMenuState extends BasicGameState {
     
     private GameContainer container;
     private StateBasedGame game;
-    private Rectangle realTimeMode;
-    private Rectangle turnBasedMode;
+    
+    private Rectangle startGame;
     private Rectangle credits;
     
     @Override
@@ -30,26 +30,35 @@ public class MainMenuState extends BasicGameState {
     
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-        g.drawString("Hello, Mazebuilder! [MainMenu]", 50, 100);
-        g.draw(realTimeMode = new Rectangle(48, 148, 200, 48));
-        g.draw(turnBasedMode = new Rectangle(48, 198, 200, 48));
-        g.draw(credits = new Rectangle(48, 248, 200, 48));
-        g.drawString("Play Real Time Mode", 50, 150);
-        g.drawString("Play Turn Based Mode", 50, 200);
-        g.drawString("Credits", 50, 250);
+        g.drawString("The Platformers [MainMenu]", 50, 100);
+        g.draw(startGame = new Rectangle(48, 148, 200, 48));
+        g.draw(credits = new Rectangle(48, 198, 200, 48));
+        g.drawString("Start!", 50, 150);
+        g.drawString("Credits", 50, 200);
     }
     
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+        // no-op
     }
     
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        // try {
-        // game.getState(GameplayState.getID()).init(container, game);
-        // } catch (SlickException e) {
-        // throw new RuntimeException(e);
-        // }
+        if (startGame.contains(x, y)) {
+            try {
+                game.getState(GameplayState.ID).init(container, game);
+                game.enterState(GameplayState.ID);
+            } catch (SlickException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (credits.contains(x, y)) {
+            try {
+                game.getState(CreditsState.ID).init(container, game);
+                game.enterState(CreditsState.ID);
+            } catch (SlickException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     
     @Override
