@@ -45,7 +45,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
         resetState();
-        Sound.playBGM();
+        GameSounds.playBGM();
     }
 
     public void resetState() throws SlickException {
