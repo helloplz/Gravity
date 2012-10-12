@@ -15,8 +15,8 @@ import com.gravity.map.GameWorld;
 
 public class CollisionEngine {
     
-    private final GameWorld    gameMap;
-    private final Set<Entity>  entities;
+    private final GameWorld gameMap;
+    private final Set<Entity> entities;
     private final List<Entity> terrainCallColls;
     private final List<Entity> terrainNoCalls;
     
@@ -73,8 +73,7 @@ public class CollisionEngine {
     
     // Package private for testing
     Map<Entity, List<Collision>> computeCollisions(int ticks) {
-        int i, j;
-        Map<Entity, List<Collision>> collisions = Maps.newHashMap();
+        Map<Entity, List<Collision>> collisions = Maps.newIdentityHashMap();
         Collision coll;
         for (Entity a : entities) {
             for (Entity b : terrainNoCalls) {
