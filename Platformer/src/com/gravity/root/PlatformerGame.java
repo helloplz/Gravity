@@ -21,6 +21,7 @@ public class PlatformerGame extends StateBasedGame {
         addState(new GameplayState());
         addState(new CreditsState());
         addState(new GameOverState());
+        addState(new GameWinState());
     }
     
     public static void main(String args[]) throws SlickException {

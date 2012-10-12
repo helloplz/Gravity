@@ -22,14 +22,14 @@ import com.gravity.player.PlayerKeyboardController.Control;
 import com.gravity.player.PlayerRenderer;
 
 public class GameplayState extends BasicGameState implements GravityGameController {
-
+    
     static final int ID = 1;
-
+    
     @Override
     public int getID() {
         return ID;
     }
-
+    
     private TileWorld map;
     private Player playerA, playerB;
     private TileWorldRenderer rendererMap;
@@ -39,12 +39,14 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private GameContainer container;
     private StateBasedGame game;
     private final Random rand = new Random();
-
+    
     private float offsetX; // Current offset x... should be negative
     private float offsetY; // Current offset y
     private float maxOffsetX; // Maximum offset x can ever be
     private int totalTime; // Time since start
-
+    
+    private static final int WIN_MARGIN = 50;
+    
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
@@ -52,7 +54,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         resetState();
         GameSounds.playBGM();
     }
-
+    
     public void resetState() throws SlickException {
         map = new TileWorld(new TiledMap("assets/game_map_final.tmx"), this);
         playerA = new Player(map, this, "pink", new Vector2f(256, 512));
@@ -72,7 +74,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         maxOffsetX = (map.getWidth() - container.getWidth()) * -1;
         totalTime = 0;
     }
-
+    
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         // TODO call the render stack
@@ -85,7 +87,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         renderControls(g, "Pink", controllerA);
         g.resetTransform();
         g.popTransform();
-
+        
         g.pushTransform();
         g.translate(672, 32);
         g.fillRoundRect(0, 0, 320, 64, 10);
@@ -93,7 +95,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         g.resetTransform();
         g.popTransform();
     }
-
+    
     public void renderControls(Graphics g, String playername, PlayerKeyboardController controller) {
         g.setColor(Color.black);
         g.drawString(playername, 12, 12);
@@ -102,7 +104,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         g.drawString("Right: " + Input.getKeyName(controller.getRight()), 190, 36);
         g.setColor(Color.white);
     }
-
+    
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         totalTime += delta;
@@ -111,63 +113,72 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         offsetX = Math.max(offsetX, maxOffsetX);
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
-
+        
+        if (checkWin(playerA) || checkWin(playerB)) {
+            game.enterState(GameWinState.ID);
+            return;
+        }
+        
         // Tell player when to die if off the screen
         checkDeath(playerA, offsetX);
         checkDeath(playerB, offsetX);
-
+        
         // Prevent player from going off right side
         checkRightSide(playerA, offsetX);
         checkRightSide(playerB, offsetX);
     }
-
+    
     private float getOffsetXDelta() {
         if (totalTime < 1000) {
             return 0;
         }
-        return 0.05f; // + (float) (totalTime - 1000) / (1000 * 1000);
+        return 0.035f; // + (float) (totalTime - 1000) / (1000 * 1000);
     }
-
+    
+    private boolean checkWin(Player player) {
+        return (player.getPosition().x + maxOffsetX >= -WIN_MARGIN);
+    }
+    
     private void checkDeath(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
         if (pos.x + offsetX2 + 32 < 0) {
             playerDies(player);
         }
     }
-
+    
     private void checkRightSide(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
         player.setPositionX(Math.min(pos.x, -offsetX2 + container.getWidth() - 32));
     }
-
+    
     @Override
     public void keyPressed(int key, char c) {
         if (!controllerA.handleKeyPress(key)) {
             controllerB.handleKeyPress(key);
         }
     }
-
+    
     @Override
     public void keyReleased(int key, char c) {
         if (!controllerA.handleKeyRelease(key)) {
             controllerB.handleKeyRelease(key);
         }
     }
-
+    
     @Override
     public void playerDies(Player player) {
         game.enterState(GameOverState.ID);
     }
-
+    
     @Override
     public void swapPlayerControls(Control ctrl) {
         int akey, bkey;
         akey = controllerA.getControl(ctrl);
         bkey = controllerB.getControl(ctrl);
-        controllerA.setControl(ctrl, akey);
-        controllerB.setControl(ctrl, bkey);
+        controllerA.setControl(ctrl, bkey);
+        controllerB.setControl(ctrl, akey);
     }
-
+    
     @Override
     public void playerHitSpikes(Player player) {
         swapPlayerControls(Control.getById(rand.nextInt(Control.size())));
