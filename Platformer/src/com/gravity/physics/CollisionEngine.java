@@ -131,7 +131,27 @@ public class CollisionEngine {
     }
     
     // Package private for testing
-    static Collision collisionLines(Entity entityA, Entity entityB, int time) {
+    public static Collision collisionLines(Entity entityA, Entity entityB, int time) {
+        
+        Shape a = entityA.getShape(time);
+        Shape b = entityB.getShape(time);
+        Map<Integer, List<Integer>> aCollisions = Maps.newHashMap();
+        Map<Integer, List<Integer>> bCollisions = Maps.newHashMap();
+        getShapeIntersections(a, b, aCollisions, bCollisions);
+        
+        // if true, then bCollisions better be empty as well.
+        if (!aCollisions.isEmpty()) {
+            Set<Integer> aPoints = Sets.newHashSet();
+            Set<Integer> bPoints = Sets.newHashSet();
+            getIntersectPoints(a, b, aCollisions, aPoints, bPoints);
+            getIntersectPoints(b, a, bCollisions, bPoints, aPoints);
+            return new Collision(entityA, entityB, time, aPoints, bPoints);
+        }
+        
+        return null;
+    }
+    
+    public static void getShapeIntersections(Shape a, Shape b, Map<Integer, List<Integer>> aCollisions, Map<Integer, List<Integer>> bCollisions) {
         // @formatter:off
         /*
          * Intersection formula used:
@@ -148,11 +168,6 @@ public class CollisionEngine {
          * Source: http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
          */
         // @formatter:on
-        
-        Shape a = entityA.getShape(time);
-        Shape b = entityB.getShape(time);
-        Map<Integer, List<Integer>> aCollisions = Maps.newHashMap();
-        Map<Integer, List<Integer>> bCollisions = Maps.newHashMap();
         float points[] = a.getPoints(); // (x3, y3) and (x4, y4)
         float thatPoints[] = b.getPoints(); // (x1, y1) and (x2, y2)
         int length = points.length;
@@ -206,20 +221,9 @@ public class CollisionEngine {
                 }
             }
         }
-        
-        // if true, then bCollisions better be empty as well.
-        if (!aCollisions.isEmpty()) {
-            Set<Integer> aPoints = Sets.newHashSet();
-            Set<Integer> bPoints = Sets.newHashSet();
-            getIntersectPoints(a, b, aCollisions, aPoints, bPoints);
-            getIntersectPoints(b, a, bCollisions, bPoints, aPoints);
-            return new Collision(entityA, entityB, time, aPoints, bPoints);
-        }
-        
-        return null;
     }
     
-    private static void getIntersectPoints(Shape a, Shape b, Map<Integer, List<Integer>> aCollisions, Set<Integer> aPoints, Set<Integer> bPoints) {
+    public static void getIntersectPoints(Shape a, Shape b, Map<Integer, List<Integer>> aCollisions, Set<Integer> aPoints, Set<Integer> bPoints) {
         int aLength = a.getPointCount();
         int bLength = b.getPointCount();
         float[] centerB = b.getCenter();
