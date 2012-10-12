@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
-import com.gravity.map.TileWorldEntity;
 
 public class CollisionEngineTest {
     

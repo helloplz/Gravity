@@ -12,6 +12,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.gravity.gameplay.GravityGameController;
 import com.gravity.physics.Entity;
+import com.gravity.physics.SpikeEntity;
+import com.gravity.physics.TileWorldEntity;
 
 public class TileWorld implements GameWorld {
     public final int height;

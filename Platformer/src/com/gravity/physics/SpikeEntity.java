@@ -1,4 +1,4 @@
-package com.gravity.map;
+package com.gravity.physics;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.newdawn.slick.geom.Shape;
 
 import com.google.common.base.Preconditions;
 import com.gravity.gameplay.GravityGameController;
-import com.gravity.physics.Collision;
 import com.gravity.player.Player;
 
 public final class SpikeEntity extends TileWorldEntity {

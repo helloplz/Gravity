@@ -1,12 +1,10 @@
-package com.gravity.map;
+package com.gravity.physics;
 
 import java.util.List;
 
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
-import com.gravity.physics.Collision;
-import com.gravity.physics.Entity;
 
 /**
  * Represents a convex shape in map terrain for collision detection.
