@@ -28,7 +28,7 @@ public class Player implements Entity {
     private GravityGameController game;
     
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
-    private final float JUMP_POWER = 1f;
+    private final float JUMP_POWER = 0.7f;
     private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
@@ -146,9 +146,11 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
             
-            if ((them.getShape(millis) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(millis).getPointCount() == 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
+                Shape shape = them.getShape(millis);
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
         }
@@ -160,7 +162,8 @@ public class Player implements Entity {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
             
-            if ((them.getShape(ticks) instanceof Rectangle)) {
+            // HACK: assumes that a 4-sided Polygon will be a Rectangle
+            if ((them.getShape(ticks).getPointCount() != 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
