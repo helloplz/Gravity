@@ -15,16 +15,6 @@
  <tileset firstgid="75" name="Spikes" tilewidth="32" tileheight="32">
   <image source="Spikes.png" width="32" height="32"/>
  </tileset>
- <layer name="shading5" width="200" height="24" visible="0">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2bwQrCMBBEc/Ig1ZMXRcSzB/H/v872UNBCmmQabcm8B3vbLtkpQ5I2CQEA5rj0sTeIR6UcJfdXNWqMgYjHQBc8yOmzRIsaui2t4fLu1sRFY/wBCi4a4w9QcNEYf4CCi8b4AxRcNMYfoOCiMf4ABReN8QcouGiMP0DBReNYn6eMnJJ6JeCP7eOi8bTP8QzBdSanpJ4C/tg+LhrH+uwyckrqlYA/to+LxvgDFFw0foXvc5kjJf5Q9yox8Mf2cdFYmT+m553VvUrpmP71PKRx0bjG+kpdi+XUW+N5SOOicWxuUPcc+MOD1jU+97ELefNHCvzhR8saD9449HEM+AM0WtZ4WD89PyL1/eqeyJ/mLr3ffFvUXZ0xENw/n+Pf/zwAWgV/ePEGKQWLfgBLAAA=
-  </data>
- </layer>
- <layer name="shading4" width="200" height="24" visible="0">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3bQQqDMBSE4Szc9ALdlZ6g979eK1QIUpO8MVTj/B9kZ4PJMGhFUwJQMn3G7eKjZZ2Rveixb+ng3zPq+zubkoeWdUb2ose+uez9yFwyoh9QuGREP6BwyYh+QOGSEf2AwiUj+gGFS0b0AwqXjOgHFC4Z0Q8oXDKiH1C4ZJSvc/2eyK9jIvOpXPZ+ZC4Zba2TfqDEPSP6gRKXjNbvZS7oB0pcMoreX229016br8c54TxcMmrpR2QO+uHBJaOW51eROeiHB5eMuH5A4Z7Rv/+TL+7fgXO7aj/m+6dXNmrPr54Nx+fH7v2++bFzfT3OgcH35zVHXT8AYGRv6cEKQQBLAAA=
-  </data>
- </layer>
  <layer name="shading3" width="200" height="24">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAA+3TQQ0AIAwEwSrAACbwr47ggCaQEjLzvsd9NgIAAAAAAAAAAAAAAAAA4G+j+gAU6Ju71Ue7eQQelO1DIwAAcN4EnPmNawBLAAA=
