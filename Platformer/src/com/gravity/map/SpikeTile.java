@@ -4,27 +4,27 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-public class BasicGroundTile extends Tile {
+public class SpikeTile extends Tile {
     
-    static private BasicGroundTile template;
+    static private SpikeTile template;
     static {
         try {
-            template = new BasicGroundTile(new Image("assets/perspective_walls.png"));
+            template = new SpikeTile(new Image("assets/Spikes.png"));
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
     }
     
     static public void loadTileImage(Image image) {
-        template = new BasicGroundTile(image);
+        template = new SpikeTile(image);
     }
     
     // Ground tiles are impassible - make the shape so
-    private BasicGroundTile(Image image) {
+    private SpikeTile(Image image) {
         super(image);
     }
     
-    public BasicGroundTile(Vector2f position) {
+    public SpikeTile(Vector2f position) {
         super(template, position);
     }
 }

@@ -5,7 +5,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 public class BasicBlankTile extends Tile {
-
+    
     static private BasicBlankTile template;
     static {
         try {
@@ -14,12 +14,12 @@ public class BasicBlankTile extends Tile {
             throw new RuntimeException(e);
         }
     }
-
+    
     // Blank tiles are passable - make the shape to reflect that
     private BasicBlankTile(Image image) {
-        super(null, image);
+        super(image);
     }
-
+    
     public BasicBlankTile(Vector2f position) {
         super(template, position);
     }

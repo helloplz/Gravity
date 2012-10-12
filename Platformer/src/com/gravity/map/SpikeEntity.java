@@ -13,8 +13,8 @@ public final class SpikeEntity extends TileWorldEntity {
     
     private final GravityGameController controller;
     
-    public SpikeEntity(GravityGameController controller, Shape shape, TileWorld map) {
-        super(shape, map);
+    public SpikeEntity(GravityGameController controller, Shape shape) {
+        super(shape);
         this.controller = controller;
     }
     
