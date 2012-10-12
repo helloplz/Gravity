@@ -22,9 +22,11 @@ import com.gravity.player.PlayerRenderer;
 
 public class GameplayState extends BasicGameState implements GravityGameController {
     
+    static final int ID = 1;
+    
     @Override
     public int getID() {
-        return 1;
+        return ID;
     }
     
     private TileWorld map;
@@ -80,7 +82,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         totalTime += delta;
         collisions.update(delta);
-        offsetX -= delta * getOffsetXDelta();
+        // offsetX -= delta * getOffsetXDelta();
         offsetX = Math.max(offsetX, maxOffsetX);
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
@@ -106,8 +108,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     
     private void checkRightSide(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
-        if (pos.x > offsetX2 + container.getWidth()) {
-            player.setPositionX(offsetX2 + container.getWidth());
+        if (pos.x > offsetX2 + container.getWidth() - 32) {
+            player.setPositionX(offsetX2 + container.getWidth() - 32);
         }
     }
     

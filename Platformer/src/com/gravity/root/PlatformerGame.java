@@ -17,7 +17,9 @@ public class PlatformerGame extends StateBasedGame {
     
     @Override
     public void initStatesList(GameContainer gc) throws SlickException {
+        addState(new MainMenuState());
         addState(new GameplayState());
+        addState(new CreditsState());
     }
     
     public static void main(String args[]) throws SlickException {
