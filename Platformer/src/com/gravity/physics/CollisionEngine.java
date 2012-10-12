@@ -92,6 +92,8 @@ public class CollisionEngine {
                 }
             }
         }
+        //@formatter:off
+        /*//No rabbit-on-rabbit business
         for (Entity a : entities) {
             for (Entity b : entities) {
                 if (a != b) {
@@ -103,6 +105,8 @@ public class CollisionEngine {
                 }
             }
         }
+        */
+        //@formatter:on
         
         return collisions;
     }
