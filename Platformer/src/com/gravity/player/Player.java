@@ -18,15 +18,15 @@ import com.gravity.physics.CollisionEngine;
 import com.gravity.physics.Entity;
 
 public class Player implements Entity {
-
+    
     public static enum Movement {
         LEFT, RIGHT, STOP
     }
-
+    
     public static int TOP_LEFT = 0, TOP_RIGHT = 1, BOT_RIGHT = 2, BOT_LEFT = 3;
-
+    
     private GravityGameController game;
-
+    
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     private final float JUMP_POWER = 1f;
     private final float MOVEMENT_INCREMENT = 1f / 2f;
@@ -34,35 +34,39 @@ public class Player implements Entity {
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
-
+    
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
-
+    
     // PLAYER CURRENT VALUES
     private GameWorld map;
-
+    
     // position and magnitude
-
+    
     // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(50, 512);
+    private Vector2f position;
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
     private Shape myShape;
-
+    
     // GAME STATE STUFF
     private boolean onGround = false;
     private final String name;
-
-    public Player(GameWorld map, GravityGameController game, String name) {
+    
+    public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
         health = MAX_HEALTH;
-        velocity = new Vector2f(0, 0);
+        position = startpos;
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
         this.name = name;
     }
-
+    
+    public String getName() {
+        return name;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -71,37 +75,37 @@ public class Player implements Entity {
         builder.append("]");
         return builder.toString();
     }
-
+    
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////GET & SET METHODS///////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
     public Vector2f getPosition() {
         return getPosition(0);
     }
-
+    
     public void setPositionX(float x) {
         position.x = x;
     }
-
+    
     @Override
     public Vector2f getPosition(int ticks) {
         return new Vector2f(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks));
     }
-
+    
     @Override
     public Shape getShape(int ticks) {
         return BASE_SHAPE.transform(Transform.createTranslateTransform(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks)));
     }
-
+    
     @Override
     public Vector2f getVelocity(int ticks) {
         return velocity.copy();
     }
-
+    
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////KEY-PRESS METHODS///////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
-
+    
     /**
      * @param jumping
      *            true if keydown, false if keyup
@@ -111,37 +115,37 @@ public class Player implements Entity {
             velocity.y -= JUMP_POWER;
         }
     }
-
+    
     /**
      * 
      * @param direction
      */
     public void move(Movement direction) {
         switch (direction) {
-        case LEFT: {
-            velocity.x = -MOVEMENT_INCREMENT;
-            break;
-        }
-        case RIGHT: {
-            velocity.x = MOVEMENT_INCREMENT;
-            break;
-        }
-        case STOP: {
-            velocity.x = 0;
-            break;
-        }
+            case LEFT: {
+                velocity.x = -MOVEMENT_INCREMENT;
+                break;
+            }
+            case RIGHT: {
+                velocity.x = MOVEMENT_INCREMENT;
+                break;
+            }
+            case STOP: {
+                velocity.x = 0;
+                break;
+            }
         }
     }
-
+    
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////COLLISION METHODS///////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
-
+    
     @Override
     public Shape handleCollisions(int millis, List<Collision> collisions) {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
-
+            
             if ((them.getShape(millis) instanceof Rectangle)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
@@ -150,12 +154,12 @@ public class Player implements Entity {
         }
         return myShape;
     }
-
+    
     @Override
     public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
         for (Collision c : collisions) {
             Entity them = c.getOtherEntity(this);
-
+            
             if ((them.getShape(ticks) instanceof Rectangle)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
             } else {
@@ -164,7 +168,7 @@ public class Player implements Entity {
         }
         return myShape;
     }
-
+    
     /**
      * Get all collision points with terrain
      */
@@ -178,7 +182,7 @@ public class Player implements Entity {
         }
         return points;
     }
-
+    
     /**
      * Handles collision with terrain
      */
@@ -190,7 +194,7 @@ public class Player implements Entity {
         boolean br = points[2];
         boolean bl = points[3];
         int count = 0;
-
+        
         // Count the # of contact points
         for (boolean point : points) {
             if (point) {
@@ -199,94 +203,94 @@ public class Player implements Entity {
         }
         // Decide what to do based on the # of contact points
         switch (count) {
-        case 0:
-            // No collisions
-            System.out.println("handleCollisions should NOT be called with empty collision list");
-            break;
-        case 1:
-            // If you only hit one corner, we will cancel velocity in the direction of the corner
-            // Origin is in the top left
-            if (tl) {
-                // If moving left
-                if (velocity.x < 0) {
+            case 0:
+                // No collisions
+                System.out.println("handleCollisions should NOT be called with empty collision list");
+                break;
+            case 1:
+                // If you only hit one corner, we will cancel velocity in the direction of the corner
+                // Origin is in the top left
+                if (tl) {
+                    // If moving left
+                    if (velocity.x < 0) {
+                        position.x -= velocity.copy().scale(millis).x;
+                    }
+                    // If moving up
+                    if (velocity.y < 0) {
+                        position.y -= velocity.copy().scale(millis).y;
+                    }
+                } else if (tr) {
+                    // If moving right
+                    if (velocity.x > 0) {
+                        position.x -= velocity.copy().scale(millis).x;
+                    }
+                    // If moving up
+                    if (velocity.y < 0) {
+                        position.y -= velocity.copy().scale(millis).y;
+                    }
+                } else if (br) {
+                    // If moving right
+                    if (velocity.x > 0) {
+                        position.x -= velocity.copy().scale(millis).x;
+                    }
+                    // If moving down
+                    if (velocity.y > 0) {
+                        position.y -= velocity.copy().scale(millis).y;
+                    }
+                } else if (bl) {
+                    // If moving left
+                    if (velocity.x < 0) {
+                        position.x -= velocity.copy().scale(millis).x;
+                    }
+                    // If moving down
+                    if (velocity.y > 0) {
+                        position.y -= velocity.copy().scale(millis).y;
+                    }
+                }
+                break;
+            case 2:
+                // if you hit the ceiling
+                if (tl && tr) {
+                    position.y -= velocity.copy().scale(millis).y;
+                    onGround = false;
+                }
+                // if you hit the floor
+                else if (bl && br) {
+                    position.y -= velocity.copy().scale(millis).y;
+                    onGround = true;
+                }
+                // if you hit the right wall
+                else if (tr && br) {
                     position.x -= velocity.copy().scale(millis).x;
                 }
-                // If moving up
-                if (velocity.y < 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
-            } else if (tr) {
-                // If moving right
-                if (velocity.x > 0) {
+                // if you hit the left wall
+                else if (tl && bl) {
                     position.x -= velocity.copy().scale(millis).x;
                 }
-                // If moving up
-                if (velocity.y < 0) {
-                    position.y -= velocity.copy().scale(millis).y;
+                // if you hit opposite corners
+                else {
+                    position.sub(velocity.copy().scale(millis));
+                    velocity.x = 0;
+                    velocity.y = 0;
                 }
-            } else if (br) {
-                // If moving right
-                if (velocity.x > 0) {
-                    position.x -= velocity.copy().scale(millis).x;
-                }
-                // If moving down
-                if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
-            } else if (bl) {
-                // If moving left
-                if (velocity.x < 0) {
-                    position.x -= velocity.copy().scale(millis).x;
-                }
-                // If moving down
-                if (velocity.y > 0) {
-                    position.y -= velocity.copy().scale(millis).y;
-                }
-            }
-            break;
-        case 2:
-            // if you hit the ceiling
-            if (tl && tr) {
-                position.y -= velocity.copy().scale(millis).y;
-                onGround = false;
-            }
-            // if you hit the floor
-            else if (bl && br) {
-                position.y -= velocity.copy().scale(millis).y;
-                onGround = true;
-            }
-            // if you hit the right wall
-            else if (tr && br) {
-                position.x -= velocity.copy().scale(millis).x;
-            }
-            // if you hit the left wall
-            else if (tl && bl) {
-                position.x -= velocity.copy().scale(millis).x;
-            }
-            // if you hit opposite corners
-            else {
+                break;
+            case 3:
+                // Collision on 2 sides
                 position.sub(velocity.copy().scale(millis));
                 velocity.x = 0;
                 velocity.y = 0;
-            }
-            break;
-        case 3:
-            // Collision on 2 sides
-            position.sub(velocity.copy().scale(millis));
-            velocity.x = 0;
-            velocity.y = 0;
         }
         updateShape();
     }
-
+    
     public void takeDamage(float damage) {
         health -= damage;
     }
-
+    
     public void heal(float heal) {
         health += heal;
     }
-
+    
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////ON-TICK METHODS/////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
@@ -311,7 +315,7 @@ public class Player implements Entity {
         }
         isDead(millis);
     }
-
+    
     public void updateAcceleration(float millis) {
         if (onGround) {
             acceleration.y = 0;
@@ -319,22 +323,22 @@ public class Player implements Entity {
             acceleration.y = GRAVITY;
         }
     }
-
+    
     public void updateVelocity(float millis) {
         // dv = a
         velocity.add(acceleration.copy().scale(millis));
-
+        
         // velocity < maxVel
         if (velocity.length() > MAX_VEL * millis) {
             velocity.scale(MAX_VEL * millis / velocity.length());
         }
     }
-
+    
     public void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
         updateShape();
     }
-
+    
     /**
      * Sets onGround depending on if the player is on the ground or not
      * 
@@ -344,7 +348,7 @@ public class Player implements Entity {
     private void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
     }
-
+    
     /**
      * Checks to see if the player is dead
      */
