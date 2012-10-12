@@ -35,6 +35,20 @@ public class MainMenuState extends BasicGameState {
         g.draw(credits = new Rectangle(48, 198, 200, 48));
         g.drawString("Start!", 50, 150);
         g.drawString("Credits", 50, 200);
+        //@formatter:off
+        g.drawString("Instructions:\n" +
+        		"You and a partner control pink and yellow bunnies\n" +
+        		"\n" +
+        		"Pink bunny starts with 'a' left, 'd' right, 'w' jump\n" +
+        		"Yellow bunny starts with arrow keys\n" +
+        		"\n" +
+        		"Get to the end of the level without falling off\n" +
+        		"the left side!\n" +
+        		"\n" +
+        		"Be careful though - there are spikes in this world,\n" +
+        		"and they may make the bunnies confused enough to take\n" +
+        		"orders from your partner and not you!", 350, 150);
+        //@formatter:on
     }
     
     @Override

@@ -24,6 +24,15 @@ public class GameOverState extends BasicGameState {
         g.drawString("Game Over! (One of the bunnies fell off the screen! Why would you do that?)", 50, 100);
         g.draw(restart = new Rectangle(48, 148, 200, 48));
         g.drawString("Back to main menu...", 50, 150);
+        //@formatter:off
+        g.drawString("Hint:\n" +
+        		"Those big red and white arrows on your screen?\n" +
+        		"Red arrows mean that your controls in that\n" +
+        		"direction have been remapped to your partner's,\n" +
+        		"and vice versa.\n" +
+        		"White arrows mean that they have been remapped\n" +
+        		"back to you.", 350, 150);
+        //@formatter:on
     }
     
     @Override
