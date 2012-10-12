@@ -20,6 +20,7 @@ public class PlatformerGame extends StateBasedGame {
         addState(new MainMenuState());
         addState(new GameplayState());
         addState(new CreditsState());
+        addState(new GameOverState());
     }
     
     public static void main(String args[]) throws SlickException {
