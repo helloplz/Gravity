@@ -1,6 +1,7 @@
 package com.gravity.player;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.newdawn.slick.geom.Rectangle;
@@ -8,9 +9,12 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.gravity.gameplay.GravityGameController;
 import com.gravity.map.GameWorld;
 import com.gravity.physics.Collision;
+import com.gravity.physics.CollisionEngine;
 import com.gravity.physics.Entity;
 
 public class Player implements Entity {
@@ -32,7 +36,6 @@ public class Player implements Entity {
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
-
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
 
     // PLAYER CURRENT VALUES
@@ -42,24 +45,27 @@ public class Player implements Entity {
 
     // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(50, 700);
+    private Vector2f position;
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
     private Shape myShape;
 
     // GAME STATE STUFF
-    private boolean onGround = true;
-
+    private boolean onGround = false;
     private final String name;
 
-    public Player(GameWorld map, GravityGameController game, String name) {
+    public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
         health = MAX_HEALTH;
-        velocity = new Vector2f(0, 0);
+        position = startpos;
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -76,6 +82,10 @@ public class Player implements Entity {
     // //////////////////////////////////////////////////////////////////////////
     public Vector2f getPosition() {
         return getPosition(0);
+    }
+
+    public void setPositionX(float x) {
+        position.x = x;
     }
 
     @Override
@@ -104,7 +114,6 @@ public class Player implements Entity {
     public void jump(boolean jumping) {
         if (jumping && onGround) {
             velocity.y -= JUMP_POWER;
-            onGround = false;
         }
     }
 
@@ -197,8 +206,7 @@ public class Player implements Entity {
         switch (count) {
         case 0:
             // No collisions
-            System.out.println("handleCollisions should NOT be called with empty collision list");
-            break;
+            throw new RuntimeException("handleCollisions should NOT be called with empty collision list");
         case 1:
             // If you only hit one corner, we will cancel velocity in the direction of the corner
             // Origin is in the top left
@@ -211,6 +219,37 @@ public class Player implements Entity {
                 if (velocity.y < 0) {
                     position.y -= velocity.copy().scale(millis).y;
                 }
+            } else if (tr) {
+                // If moving right
+                if (velocity.x > 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving up
+                if (velocity.y < 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            } else if (br) {
+                // If moving right
+                if (velocity.x > 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving down
+                if (velocity.y > 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            } else if (bl) {
+                // If moving left
+                if (velocity.x < 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving down
+                if (velocity.y > 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            }
+            // If moving up
+            if (velocity.y < 0) {
+                position.y -= velocity.copy().scale(millis).y;
             } else if (tr) {
                 // If moving right
                 if (velocity.x > 0) {
@@ -291,10 +330,25 @@ public class Player implements Entity {
         updatePosition(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
+        Shape hitbox = myShape.transform(Transform.createTranslateTransform(0, 5));
+        List<Shape> collisions = map.getTouching(hitbox);
+        onGround = false;
+        for (Shape e : collisions) {
+            Map<Integer, List<Integer>> aCollisions = Maps.newHashMap(), bCollisions = Maps.newHashMap();
+            CollisionEngine.getShapeIntersections(hitbox, e, aCollisions, bCollisions);
+            Set<Integer> aPoints = Sets.newHashSet();
+            Set<Integer> bPoints = Sets.newHashSet();
+            CollisionEngine.getIntersectPoints(hitbox, e, aCollisions, aPoints, bPoints);
+            CollisionEngine.getIntersectPoints(e, hitbox, bCollisions, bPoints, aPoints);
+            if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)) {
+                onGround = true;
+                break;
+            }
+        }
         isDead(millis);
     }
 
-    private void updateAcceleration(float millis) {
+    public void updateAcceleration(float millis) {
         if (onGround) {
             acceleration.y = 0;
         } else {
@@ -302,7 +356,7 @@ public class Player implements Entity {
         }
     }
 
-    private void updateVelocity(float millis) {
+    public void updateVelocity(float millis) {
         // dv = a
         velocity.add(acceleration.copy().scale(millis));
 
@@ -312,7 +366,7 @@ public class Player implements Entity {
         }
     }
 
-    private void updatePosition(float millis) {
+    public void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
         updateShape();
     }
