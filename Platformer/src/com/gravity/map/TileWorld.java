@@ -11,21 +11,28 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.gravity.gameplay.GravityGameController;
 import com.gravity.physics.Entity;
+import com.gravity.physics.SpikeEntity;
+import com.gravity.physics.TileWorldEntity;
 
 public class TileWorld implements GameWorld {
-    public final int           height;
-    public final int           width;
+    public final int height;
+    public final int width;
     
-    public final int           tileHeight;
-    public final int           tileWidth;
+    public final int tileHeight;
+    public final int tileWidth;
     
-    private List<Entity>       entities;
+    private List<Entity> entities;
     private Map<Shape, Entity> touchingBoxes;
     
-    private TiledMap           map;
+    private TiledMap map;
     
-    public TileWorld(TiledMap map) {
+    private static final int TILES_LAYER_ID = 0;
+    private static final int PERSPECTIVE_LAYER_ID = 1;
+    private static final int SPIKES_LAYER_ID = 2;
+    
+    public TileWorld(TiledMap map, GravityGameController controller) {
         // Get width/height
         this.tileWidth = map.getTileWidth();
         this.tileHeight = map.getTileHeight();
@@ -36,13 +43,13 @@ public class TileWorld implements GameWorld {
         
         touchingBoxes = Maps.newHashMap();
         Rectangle bound = new Rectangle(0, this.height - this.tileHeight, this.width, 1 * tileHeight);
-        Entity bottom = new TileWorldEntity(bound, this);
+        Entity bottom = new TileWorldEntity(bound);
         bound.grow(.1f, .1f);
         touchingBoxes.put(bound, bottom);
         entities = Lists.newArrayList(bottom);
         
         // Iterate over and find all tiles
-        int layerId = 0; // Layer ID to search at
+        int layerId = TILES_LAYER_ID; // Layer ID to search at
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
                 int tileId = map.getTileId(i, j, layerId);
@@ -51,10 +58,27 @@ public class TileWorld implements GameWorld {
                     Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
                     Rectangle g = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
                     g.grow(3, 3);
-                    Entity e = new TileWorldEntity(r, this);
+                    Entity e = new TileWorldEntity(r);
                     
                     touchingBoxes.put(g, e);
                     entities.add(e);
+                }
+            }
+        }
+        
+        if (map.getLayerCount() > SPIKES_LAYER_ID) {
+            layerId = SPIKES_LAYER_ID;
+            for (int i = 0; i < map.getWidth(); i++) {
+                for (int j = 0; j < map.getHeight(); j++) {
+                    int tileId = map.getTileId(i, j, layerId);
+                    if (tileId != 0) {
+                        // Tile exists at this spot
+                        Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                        Entity e = new SpikeEntity(controller, r);
+                        
+                        touchingBoxes.put(r, e);
+                        entities.add(e);
+                    }
                 }
             }
         }

@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
-import com.gravity.map.TileWorldEntity;
 
 public class CollisionEngineTest {
     
@@ -14,7 +13,7 @@ public class CollisionEngineTest {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(8, 3, 10, 5);
         
-        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a), new TileWorldEntity(b), 0);
         Assert.assertArrayEquals(new Integer[] { 2 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0 }, collision.collisionsB.toArray());
     }
@@ -24,7 +23,7 @@ public class CollisionEngineTest {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(0, 3, 10, 5);
         
-        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a), new TileWorldEntity(b), 0);
         Assert.assertArrayEquals(new Integer[] { 2, 3 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0, 1 }, collision.collisionsB.toArray());
     }
@@ -34,7 +33,7 @@ public class CollisionEngineTest {
         Shape a = new Rectangle(0, 0, 10, 5);
         Shape b = new Rectangle(-2, 4, 14, 9);
         
-        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a, null), new TileWorldEntity(b, null), 0);
+        Collision collision = CollisionEngine.collisionLines(new TileWorldEntity(a), new TileWorldEntity(b), 0);
         Assert.assertArrayEquals(new Integer[] { 2, 3 }, collision.collisionsA.toArray());
         Assert.assertArrayEquals(new Integer[] { 0, 1 }, collision.collisionsB.toArray());
     }
