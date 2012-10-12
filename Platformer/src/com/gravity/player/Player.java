@@ -166,12 +166,12 @@ public class Player implements Entity {
     /**
      * Get all collision points with terrain
      */
-    private boolean[] getCollisionPoints(List<Collision> collisions) {
-        boolean[] points = { false, false, false, false };
+    private Entity[] getCollisionPoints(List<Collision> collisions) {
+        Entity[] points = { null, null, null, null };
         for (Collision collision : collisions) {
             Set<Integer> colPoints = collision.getMyCollisions(this);
             for (int point : colPoints) {
-                points[point] = true;
+                points[point] = collision.getOtherEntity(this);
             }
         }
         return points;
@@ -180,18 +180,23 @@ public class Player implements Entity {
     /**
      * Handles collision with terrain
      */
-    private void resolveTerrainCollisions(boolean[] points, int millis) {
-        // System.out.println(position.x + ", " + position.y);
-        // System.out.println(this);
-        boolean tl = points[0];
-        boolean tr = points[1];
-        boolean br = points[2];
-        boolean bl = points[3];
+    private void resolveTerrainCollisions(Entity[] points, int millis) {
+        System.out.println("old position = " + position.x + ", " + position.y);
+        
+        Entity etl = points[0];
+        Entity etr = points[1];
+        Entity ebr = points[2];
+        Entity ebl = points[3];
+        
+        boolean tl = (etl != null);
+        boolean tr = (etr != null);
+        boolean br = (ebr != null);
+        boolean bl = (ebl != null);
         int count = 0;
         
         // Count the # of contact points
-        for (boolean point : points) {
-            if (point) {
+        for (Entity point : points) {
+            if (point != null) {
                 count++;
             }
         }
@@ -207,62 +212,61 @@ public class Player implements Entity {
                 if (tl) {
                     // If moving left
                     if (velocity.x < 0) {
-                        position.x -= velocity.copy().scale(millis).x;
+                        position.x += getXOverlap(this, etl, millis);
                     }
                     // If moving up
                     if (velocity.y < 0) {
-                        position.y -= velocity.copy().scale(millis).y;
+                        position.y += getYOverlap(this, etl, millis);
                     }
                 } else if (tr) {
                     // If moving right
                     if (velocity.x > 0) {
-                        position.x -= velocity.copy().scale(millis).x;
+                        position.x -= getXOverlap(this, etr, millis);
                     }
                     // If moving up
                     if (velocity.y < 0) {
-                        position.y -= velocity.copy().scale(millis).y;
+                        position.y += getYOverlap(this, etr, millis);
                     }
                 } else if (br) {
                     // If moving right
                     if (velocity.x > 0) {
-                        position.x -= velocity.copy().scale(millis).x;
+                        position.x -= getXOverlap(this, ebr, millis);
                     }
                     // If moving down
                     if (velocity.y > 0) {
-                        position.y -= velocity.copy().scale(millis).y;
+                        position.y -= getYOverlap(this, ebr, millis);
                     }
                 } else if (bl) {
                     // If moving left
                     if (velocity.x < 0) {
-                        position.x -= velocity.copy().scale(millis).x;
+                        position.x += getXOverlap(this, ebl, millis);
                     }
                     // If moving down
                     if (velocity.y > 0) {
-                        position.y -= velocity.copy().scale(millis).y;
+                        position.y -= getYOverlap(this, ebl, millis);
                     }
                 }
                 break;
             case 2:
                 // if you hit the ceiling
                 if (tl && tr) {
-                    position.y -= velocity.copy().scale(millis).y;
-                    onGround = false;
+                    position.y += Math.max(getYOverlap(this, etl, millis), getYOverlap(this, etr, millis));
                 }
                 // if you hit the floor
                 else if (bl && br) {
-                    position.y -= velocity.copy().scale(millis).y;
-                    onGround = true;
+                    position.y -= Math.max(getYOverlap(this, ebl, millis), getYOverlap(this, ebr, millis));
                 }
                 // if you hit the right wall
                 else if (tr && br) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    position.x -= Math.max(getXOverlap(this, etr, millis), getXOverlap(this, ebr, millis));
                 }
                 // if you hit the left wall
                 else if (tl && bl) {
-                    position.x -= velocity.copy().scale(millis).x;
+                    position.x += Math.max(getXOverlap(this, etl, millis), getXOverlap(this, ebl, millis));
                 }
                 // if you hit opposite corners
                 else {
+                    System.out.println("check opening size!!!");
                     position.sub(velocity.copy().scale(millis));
                     velocity.x = 0;
                     velocity.y = 0;
@@ -275,6 +279,36 @@ public class Player implements Entity {
                 velocity.y = 0;
         }
         updateShape();
+        System.out.println("new position = " + position.x + ", " + position.y);
+        
+    }
+    
+    /**
+     * @param me
+     * @param them
+     * @param ticks
+     * @return the overlap (always positive)
+     */
+    private float getXOverlap(Entity me, Entity them, int ticks) {
+        float difX = them.getShape(ticks).getCenterX() - (position.x + velocity.copy().scale(ticks).x);
+        System.out.println("difX = " + difX);
+        float result = Math.abs(difX - ((myShape.getWidth() + them.getShape(ticks).getWidth()) / 2));
+        System.out.println("x overlap = " + result);
+        return result;
+    }
+    
+    /**
+     * @param me
+     * @param them
+     * @param ticks
+     * @return the overlap (always positive)
+     */
+    private float getYOverlap(Entity me, Entity them, int ticks) {
+        float difY = them.getShape(ticks).getCenterY() - (position.y + velocity.copy().scale(ticks).y);
+        System.out.println("difY = " + difY);
+        float result = Math.abs(difY - ((myShape.getHeight() + them.getShape(ticks).getHeight()) / 2));
+        System.out.println("y overlap = " + result);
+        return result;
     }
     
     public void takeDamage(float damage) {
