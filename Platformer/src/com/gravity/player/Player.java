@@ -25,7 +25,7 @@ public class Player implements Entity {
     
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     
-    private final float JUMP_POWER = 1f;
+    private final float JUMP_POWER = 1f / 2f;
     private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
@@ -41,7 +41,7 @@ public class Player implements Entity {
     
     // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(50, 512);
+    private Vector2f position = new Vector2f(50, 700);
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;

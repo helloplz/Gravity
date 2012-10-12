@@ -9,11 +9,11 @@ import com.gravity.player.PlayerKeyboardController.Control;
  * @author xiao
  */
 public interface GravityGameController {
-    
+
     public void playerDies(Player player);
-    
+
     public void playerHitSpikes(Player player);
-    
+
     public void swapPlayerControls(Control ctrl);
-    
+
 }
