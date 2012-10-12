@@ -3,6 +3,7 @@ package com.gravity.map;
 import java.util.List;
 import java.util.Map;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -13,33 +14,33 @@ import com.google.common.collect.Maps;
 import com.gravity.physics.Entity;
 
 public class TileWorld implements GameWorld {
-    public final int height;
-    public final int width;
-
-    public final int tileHeight;
-    public final int tileWidth;
-
-    private List<Entity> entities;
+    public final int           height;
+    public final int           width;
+    
+    public final int           tileHeight;
+    public final int           tileWidth;
+    
+    private List<Entity>       entities;
     private Map<Shape, Entity> touchingBoxes;
-
-    private TiledMap map;
-
+    
+    private TiledMap           map;
+    
     public TileWorld(TiledMap map) {
         // Get width/height
         this.tileWidth = map.getTileWidth();
         this.tileHeight = map.getTileHeight();
         this.width = map.getWidth() * tileWidth;
         this.height = map.getHeight() * tileHeight;
-
+        
         this.map = map;
-
+        
         touchingBoxes = Maps.newHashMap();
         Rectangle bound = new Rectangle(0, this.height - this.tileHeight, this.width, 1 * tileHeight);
         Entity bottom = new TileWorldEntity(bound, this);
         bound.grow(.1f, .1f);
         touchingBoxes.put(bound, bottom);
         entities = Lists.newArrayList(bottom);
-
+        
         // Iterate over and find all tiles
         int layerId = 0; // Layer ID to search at
         for (int i = 0; i < map.getWidth(); i++) {
@@ -48,16 +49,18 @@ public class TileWorld implements GameWorld {
                 if (tileId != 0) {
                     // Tile exists at this spot
                     Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    Rectangle g = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    g.grow(3, 3);
                     Entity e = new TileWorldEntity(r, this);
-
-                    touchingBoxes.put(r, e);
+                    
+                    touchingBoxes.put(g, e);
                     entities.add(e);
                 }
             }
         }
-
+        
     }
-
+    
     @Override
     public List<Entity> getCollisions(Shape shape) {
         List<Entity> collisions = Lists.newArrayList();
@@ -68,38 +71,48 @@ public class TileWorld implements GameWorld {
         }
         return collisions;
     }
-
+    
     @Override
-    public List<Entity> getTouching(Shape shape) {
-        List<Entity> touches = Lists.newArrayList();
+    public List<Shape> getTouching(Shape shape) {
+        List<Shape> touches = Lists.newArrayList();
         for (Shape terrain : touchingBoxes.keySet()) {
             if (shape.intersects(terrain)) {
-                touches.add(touchingBoxes.get(terrain));
+                touches.add(terrain);
             }
         }
         return touches;
     }
-
+    
     @Override
     public int getHeight() {
         return height;
     }
-
+    
     @Override
     public int getWidth() {
         return width;
     }
-
+    
     @Override
     public List<Entity> getTerrainEntities() {
         return entities;
     }
-
+    
     @Override
     public void render(Graphics g, int offsetX, int offsetY) {
         g.pushTransform();
-        map.render(offsetX, offsetY);
+        g.translate(offsetX, offsetY);
+        g.setColor(Color.red);
+        for (Entity e : entities) {
+            g.draw(e.getShape(0));
+        }
+        g.setColor(Color.green);
+        for (Shape s : touchingBoxes.keySet()) {
+            g.draw(s);
+        }
+        g.setColor(Color.white);
         g.resetTransform();
         g.popTransform();
+        map.render(offsetX, offsetY);
     }
 }

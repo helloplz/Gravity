@@ -2,6 +2,7 @@ package com.gravity.player;
 
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -10,38 +11,38 @@ import com.google.common.collect.Lists;
 import com.gravity.root.Renderer;
 
 public class PlayerRenderer implements Renderer {
-    private Player player;
-    private Image bunnyPlayer;
-    private Image bunnyPlayerRun1;
-    private Image bunnyPlayerRun2;
-    private Image bunnyPlayerRun3;
-    private Image bunnyPlayerRun4;
-    private Image bunnyPlayerRun5;
-    private Image bunnyPlayerRun6;
-    private Image bunnyPlayerRunBack1;
-    private Image bunnyPlayerRunBack2;
-    private Image bunnyPlayerRunBack3;
-    private Image bunnyPlayerRunBack4;
-    private Image bunnyPlayerRunBack5;
-    private Image bunnyPlayerRunBack6;
-    private Image bunnyPlayerDuck1;
-    private Image bunnyPlayerDuck2;
-    private Image bunnyPlayerDuck3;
-    private float x;
-    private float y;
-    private Image lastImage;
+    private Player      player;
+    private Image       bunnyPlayer;
+    private Image       bunnyPlayerRun1;
+    private Image       bunnyPlayerRun2;
+    private Image       bunnyPlayerRun3;
+    private Image       bunnyPlayerRun4;
+    private Image       bunnyPlayerRun5;
+    private Image       bunnyPlayerRun6;
+    private Image       bunnyPlayerRunBack1;
+    private Image       bunnyPlayerRunBack2;
+    private Image       bunnyPlayerRunBack3;
+    private Image       bunnyPlayerRunBack4;
+    private Image       bunnyPlayerRunBack5;
+    private Image       bunnyPlayerRunBack6;
+    private Image       bunnyPlayerDuck1;
+    private Image       bunnyPlayerDuck2;
+    private Image       bunnyPlayerDuck3;
+    private float       x;
+    private float       y;
+    private Image       lastImage;
     private List<Image> runningBunny;
     private List<Image> runningBackBunny;
     private List<Image> duckingBunny;
-    private int tweener;
-
+    private int         tweener;
+    
     public PlayerRenderer(Player player) {
         this.player = player;
         try {
             runningBunny = Lists.newArrayList();
             runningBackBunny = Lists.newArrayList();
             duckingBunny = Lists.newArrayList();
-
+            
             bunnyPlayer = new Image("./assets/BunnyAssets/yellowbunnyStand.png");
             runningBunny.add(bunnyPlayerRun1 = new Image("./assets/BunnyAssets/yellowbunnyRun1.png"));
             runningBunny.add(bunnyPlayerRun2 = new Image("./assets/BunnyAssets/yellowbunnyRun2.png"));
@@ -58,12 +59,12 @@ public class PlayerRenderer implements Renderer {
             runningBackBunny.add(bunnyPlayerRunBack4 = new Image("./assets/BunnyAssets/yellowbunnyRunBack4.png"));
             runningBackBunny.add(bunnyPlayerRunBack5 = new Image("./assets/BunnyAssets/yellowbunnyRunBack5.png"));
             runningBackBunny.add(bunnyPlayerRunBack6 = new Image("./assets/BunnyAssets/yellowbunnyRunBack6.png"));
-
+            
         } catch (SlickException e) {
             throw new RuntimeException(e);
         }
     }
-
+    
     @Override
     public void render(Graphics g, int offsetX, int offsetY) {
         this.x = player.getPosition().x;
@@ -87,5 +88,12 @@ public class PlayerRenderer implements Renderer {
         }
         g.drawImage(lastImage, this.x + offsetX, this.y + offsetY);
         tweener++;
+        g.pushTransform();
+        g.translate(offsetX, offsetY);
+        g.setColor(Color.red);
+        g.draw(player.getShape(0));
+        g.setColor(Color.white);
+        g.resetTransform();
+        g.popTransform();
     }
 }
