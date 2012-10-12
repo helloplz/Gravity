@@ -163,7 +163,7 @@ public class Player implements Entity {
             Entity them = c.getOtherEntity(this);
             
             // HACK: assumes that a 4-sided Polygon will be a Rectangle
-            if ((them.getShape(ticks).getPointCount() != 4)) {
+            if ((them.getShape(ticks).getPointCount() == 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
