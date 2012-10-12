@@ -50,7 +50,6 @@ public class TileWorld implements GameWorld {
                 if (tileId != 0) {
                     // Tile exists at this spot
                     Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
-                    Rectangle g = new Rectangle(i * tileWidth, j * tileHeight + 3, tileWidth, tileHeight);
                     Entity e = new TileWorldEntity(r);
                     
                     entityNoCalls.add(e);
