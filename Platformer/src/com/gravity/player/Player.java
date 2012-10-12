@@ -28,14 +28,12 @@ public class Player implements Entity {
     private GravityGameController game;
     
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
-    
-    private final float JUMP_POWER = 1f / 2f;
-    private final float MOVEMENT_INCREMENT = 1f / 2f;
+    private final float JUMP_POWER = 0.7f;
+    private final float MOVEMENT_INCREMENT = 1f / 6f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 75f;
     private final float VEL_DAMP = 0.5f;
-    private final float GRAVITY = 1.0f / 1000f;
-    
+    private final float GRAVITY = 1.0f / 500f;
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
     
     // PLAYER CURRENT VALUES

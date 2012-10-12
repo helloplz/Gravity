@@ -24,8 +24,11 @@ public interface GameWorld extends Renderer {
     /** Get the width of this map, in pixels */
     public int getWidth();
     
-    /** Return a list of entities for use in collision detection */
-    public List<Entity> getTerrainEntities();
+    /** Return a list of entities for use in collision detection that do not wish to be notified of collisions */
+    public List<Entity> getTerrainEntitiesNoCalls();
+    
+    /** Return a list of entities for use in collision detection that wish to be notified of collisions */
+    public List<Entity> getTerrainEntitiesCallColls();
     
     /** Returns a list of entities which this shape is touching (within a certain number of pixels of) */
     List<Shape> getTouching(Shape shape);
