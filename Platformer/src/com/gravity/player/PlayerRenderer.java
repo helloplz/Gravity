@@ -6,6 +6,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Transform;
 
 import com.google.common.collect.Lists;
 import com.gravity.root.Renderer;
@@ -111,6 +112,8 @@ public class PlayerRenderer implements Renderer {
         g.translate(offsetX, offsetY);
         g.setColor(Color.red);
         g.draw(player.getShape(0));
+        g.setColor(Color.green);
+        g.draw(player.getShape(0).transform(Transform.createTranslateTransform(0, 5)));
         g.setColor(Color.white);
         g.resetTransform();
         g.popTransform();
