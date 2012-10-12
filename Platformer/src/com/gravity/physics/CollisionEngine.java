@@ -61,7 +61,7 @@ public class CollisionEngine {
                     c.getKey().handleCollisions(increment, c.getValue());
                 }
                 collisions = computeCollisions(increment);
-                for (int tries = 0; !collisions.isEmpty() && tries < 3; tries++) {
+                for (int tries = 0; !collisions.isEmpty() && tries < 5; tries++) {
                     if (!collisions.isEmpty()) {
                         for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
                             c.getKey().rehandleCollisions(increment, c.getValue());
