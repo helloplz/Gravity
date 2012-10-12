@@ -52,6 +52,7 @@ public class Player implements Entity {
     // GAME STATE STUFF
     private boolean onGround = false;
     private final String name;
+    private Movement requested = Movement.STOP;
     
     public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
         health = MAX_HEALTH;
@@ -297,6 +298,16 @@ public class Player implements Entity {
             }
         }
         isDead(millis);
+        switch (requested) {
+            case LEFT:
+                velocity.x = -MOVEMENT_INCREMENT;
+                break;
+            case RIGHT:
+                velocity.x = MOVEMENT_INCREMENT;
+                break;
+            default:
+                // no-op
+        }
     }
     
     public void updateAcceleration(float millis) {
@@ -330,6 +341,10 @@ public class Player implements Entity {
      */
     private void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
+    }
+    
+    public void setRequestedMovement(Movement requested) {
+        this.requested = requested;
     }
     
     /**
