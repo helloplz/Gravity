@@ -77,6 +77,10 @@ public class Player implements Entity {
         return getPosition(0);
     }
 
+    public void setPositionX(float x) {
+        position.x = x;
+    }
+
     @Override
     public Vector2f getPosition(int ticks) {
         return new Vector2f(position.x + (velocity.x * ticks), position.y + (velocity.y * ticks));
