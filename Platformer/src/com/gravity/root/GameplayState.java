@@ -78,7 +78,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         totalTime += delta;
         collisions.update(delta);
-        offsetX -= delta * getOffsetXDelta();
+        // offsetX -= delta * getOffsetXDelta();
         offsetX = Math.max(offsetX, maxOffsetX);
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
@@ -104,8 +104,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
 
     private void checkRightSide(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
-        if (pos.x > offsetX2 + container.getWidth()) {
-            player.setPositionX(offsetX2 + container.getWidth());
+        if (pos.x > offsetX2 + container.getWidth() - 32) {
+            player.setPositionX(offsetX2 + container.getWidth() - 32);
         }
     }
 
