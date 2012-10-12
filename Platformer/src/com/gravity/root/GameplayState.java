@@ -53,6 +53,8 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private float maxOffsetX; // Maximum offset x can ever be
     private int totalTime; // Time since start
     
+    private static final int WIN_MARGIN = 50;
+    
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
@@ -166,6 +168,11 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
         
+        if (checkWin(playerA) || checkWin(playerB)) {
+            game.enterState(GameWinState.ID);
+            return;
+        }
+        
         // Tell player when to die if off the screen
         checkDeath(playerA, offsetX);
         checkDeath(playerB, offsetX);
@@ -177,10 +184,14 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
     
     private float getOffsetXDelta() {
-        if (totalTime < 3000) {
+        if (totalTime < 1000) {
             return 0;
         }
-        return 0.05f; // + (float) (totalTime - 1000) / (1000 * 1000);
+        return 0.035f; // + (float) (totalTime - 1000) / (1000 * 1000);
+    }
+    
+    private boolean checkWin(Player player) {
+        return (player.getPosition().x + maxOffsetX >= -WIN_MARGIN);
     }
     
     private void checkDeath(Player player, float offsetX2) {
