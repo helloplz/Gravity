@@ -30,7 +30,7 @@ public class Player implements Entity {
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
 
     private final float JUMP_POWER = 0.7f;
-    private final float MOVEMENT_INCREMENT = 1f / 2f;
+    private final float MOVEMENT_INCREMENT = 1f / 6f;
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
