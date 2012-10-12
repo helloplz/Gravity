@@ -6,6 +6,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
@@ -82,10 +83,20 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         // playerB.tick(delta);
         // TODO update on CollisionEngine and other players
 
+        // Tell player when to die if off the screen
+        // checkDeath(playerA, offsetX);
+        checkDeath(playerB, offsetX);
     }
 
     private float getOffsetXDelta() {
         return 0.05f + (float) totalTime / (1000 * 1000);
+    }
+
+    private void checkDeath(Player player, float offsetX2) {
+        Vector2f pos = player.getPosition();
+        if (pos.x + offsetX2 < 0) {
+            playerDies(player);
+        }
     }
 
     @Override
