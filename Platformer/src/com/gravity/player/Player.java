@@ -29,10 +29,10 @@ public class Player implements Entity {
     
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     
-    private final float JUMP_POWER = 2f / 3f;
+    private final float JUMP_POWER = 1f / 2f;
     private final float MOVEMENT_INCREMENT = 1f / 2f;
     private final float MAX_HEALTH = 10;
-    private final float MAX_VEL = 100f;
+    private final float MAX_VEL = 75f;
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 1000f;
     
@@ -373,7 +373,8 @@ public class Player implements Entity {
             Set<Integer> bPoints = Sets.newHashSet();
             CollisionEngine.getIntersectPoints(hitbox, e, aCollisions, aPoints, bPoints);
             CollisionEngine.getIntersectPoints(e, hitbox, bCollisions, bPoints, aPoints);
-            if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)) {
+            if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)
+                    || (aPoints.size() == 1 && (aPoints.contains(BOT_LEFT) || aPoints.contains(BOT_RIGHT)))) {
                 onGround = true;
                 break;
             }
