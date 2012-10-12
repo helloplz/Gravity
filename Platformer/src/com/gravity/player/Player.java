@@ -251,7 +251,9 @@ public class Player implements Entity {
                     velocity.x = 0;
                 } else {
                     // if you hit opposite corners
-                    System.out.println("check opening size!!!");
+                    if ((points[0] == points[2] && points[0] != null) || (points[1] == points[3] && points[1] != null)) {
+                        System.out.println("check opening size!!!");
+                    }
                     velocity.x = 0;
                     velocity.y = 0;
                 }
