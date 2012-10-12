@@ -27,6 +27,7 @@ public class Player implements Entity {
 
     private final float JUMP_POWER = 2f / 3f;
     private final float MOVEMENT_INCREMENT = 1f / 4f;
+
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
@@ -138,7 +139,7 @@ public class Player implements Entity {
             Entity them = c.getOtherEntity(this);
 
             if ((them.getShape(millis) instanceof Rectangle)) {
-                terrainCollision(c, millis);
+                resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
@@ -148,43 +149,128 @@ public class Player implements Entity {
 
     @Override
     public Shape rehandleCollisions(int ticks, List<Collision> collisions) {
-        throw new RuntimeException("Cannot resolve re-collision.");
+        for (Collision c : collisions) {
+            Entity them = c.getOtherEntity(this);
+
+            if ((them.getShape(ticks) instanceof Rectangle)) {
+                resolveTerrainCollisions(getCollisionPoints(collisions), ticks);
+            } else {
+                throw new RuntimeException("Cannot resolve non-Rectangle collision.");
+            }
+        }
+        return myShape;
+    }
+
+    /**
+     * Get all collision points with terrain
+     */
+    private boolean[] getCollisionPoints(List<Collision> collisions) {
+        boolean[] points = { false, false, false, false };
+        for (Collision collision : collisions) {
+            Set<Integer> colPoints = collision.getMyCollisions(this);
+            for (int point : colPoints) {
+                points[point] = true;
+            }
+        }
+        return points;
     }
 
     /**
      * Handles collision with terrain
      */
-    private void terrainCollision(Collision collidee, int millis) {
-        // position.add(velocity.scale((float) (millis - (10000.0 / 1000))));
-        // updateShape();
-        // If I'm overlapping their xcoord
-        Shape sh = getShape(millis);
-        Shape oth = collidee.getOtherEntity(this).getShape(millis);
-        Set<Integer> points = collidee.getMyCollisions(this);
-        if (points.contains(TOP_RIGHT) && points.contains(BOT_RIGHT)) {
-            // collision right
-            velocity.x = 0;
-        } else if (points.contains(TOP_LEFT) && points.contains(BOT_LEFT)) {
-            // collision left
-            velocity.x = 0;
+    private void resolveTerrainCollisions(boolean[] points, int millis) {
+        // System.out.println(position.x + ", " + position.y);
+        // System.out.println(this);
+        boolean tl = points[0];
+        boolean tr = points[1];
+        boolean br = points[2];
+        boolean bl = points[3];
+        int count = 0;
+
+        // Count the # of contact points
+        for (boolean point : points) {
+            if (point) {
+                count++;
+            }
         }
-        // If I'm overlapping their ycoord
-        else if (points.contains(TOP_LEFT) && points.contains(TOP_RIGHT)) {
-            // collision top
+        // Decide what to do based on the # of contact points
+        switch (count) {
+        case 0:
+            // No collisions
+            System.out.println("handleCollisions should NOT be called with empty collision list");
+            break;
+        case 1:
+            // If you only hit one corner, we will cancel velocity in the direction of the corner
+            // Origin is in the top left
+            if (tl) {
+                // If moving left
+                if (velocity.x < 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving up
+                if (velocity.y < 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            } else if (tr) {
+                // If moving right
+                if (velocity.x > 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving up
+                if (velocity.y < 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            } else if (br) {
+                // If moving right
+                if (velocity.x > 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving down
+                if (velocity.y > 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            } else if (bl) {
+                // If moving left
+                if (velocity.x < 0) {
+                    position.x -= velocity.copy().scale(millis).x;
+                }
+                // If moving down
+                if (velocity.y > 0) {
+                    position.y -= velocity.copy().scale(millis).y;
+                }
+            }
+            break;
+        case 2:
+            // if you hit the ceiling
+            if (tl && tr) {
+                position.y -= velocity.copy().scale(millis).y;
+                onGround = false;
+            }
+            // if you hit the floor
+            else if (bl && br) {
+                position.y -= velocity.copy().scale(millis).y;
+                onGround = true;
+            }
+            // if you hit the right wall
+            else if (tr && br) {
+                position.x -= velocity.copy().scale(millis).x;
+            }
+            // if you hit the left wall
+            else if (tl && bl) {
+                position.x -= velocity.copy().scale(millis).x;
+            }
+            // if you hit opposite corners
+            else {
+                position.sub(velocity.copy().scale(millis));
+                velocity.x = 0;
+                velocity.y = 0;
+            }
+            break;
+        case 3:
+            // Collision on 2 sides
+            position.sub(velocity.copy().scale(millis));
+            velocity.x = 0;
             velocity.y = 0;
-            onGround = false;
-        } else if (points.contains(BOT_LEFT) && points.contains(BOT_RIGHT)) {
-            // collision bottom
-            velocity.y = 0;
-            onGround = true;
-        } else if (points.contains(TOP_LEFT) || points.contains(BOT_LEFT)) {
-            velocity.y = 0;
-            velocity.x = Math.abs(velocity.x);
-        } else if (points.contains(TOP_RIGHT) || points.contains(BOT_RIGHT)) {
-            velocity.y = 0;
-            velocity.x = -Math.abs(velocity.x);
-        } else {
-            throw new RuntimeException("No overlap detected: " + sh.toString() + " with " + oth.toString());
         }
         updateShape();
     }
@@ -205,9 +291,10 @@ public class Player implements Entity {
         updatePosition(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
+        isDead(millis);
     }
 
-    public void updateAcceleration(float millis) {
+    private void updateAcceleration(float millis) {
         if (onGround) {
             acceleration.y = 0;
         } else {
@@ -215,7 +302,7 @@ public class Player implements Entity {
         }
     }
 
-    public void updateVelocity(float millis) {
+    private void updateVelocity(float millis) {
         // dv = a
         velocity.add(acceleration.copy().scale(millis));
 
@@ -225,18 +312,25 @@ public class Player implements Entity {
         }
     }
 
-    public void updatePosition(float millis) {
+    private void updatePosition(float millis) {
         position.add(velocity.copy().scale(millis));
         updateShape();
     }
 
-    /*
+    /**
      * Sets onGround depending on if the player is on the ground or not
      * 
      * 
      * /** CALL THIS EVERY TIME YOU DO ANYTHING TO POSITION OR SHAPE >>>>>>> 578f54515a017ccc7211c613d175bbac8740860c
      */
-    public void updateShape() {
+    private void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
+    }
+
+    /**
+     * Checks to see if the player is dead
+     */
+    private void isDead(float millis) {
+        // TODO
     }
 }
