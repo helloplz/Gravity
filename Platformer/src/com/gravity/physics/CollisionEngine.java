@@ -15,13 +15,11 @@ import com.gravity.map.GameWorld;
 
 public class CollisionEngine {
     
-    private final GameWorld gameMap;
     private final Set<Entity> entities;
     private final List<Entity> terrainCallColls;
     private final List<Entity> terrainNoCalls;
     
     public CollisionEngine(GameWorld map) {
-        gameMap = map;
         entities = Sets.newIdentityHashSet();
         terrainNoCalls = map.getTerrainEntitiesNoCalls();
         terrainCallColls = map.getTerrainEntitiesCallColls();
