@@ -150,7 +150,6 @@ public class Player implements Entity {
             if ((them.getShape(millis).getPointCount() == 4)) {
                 resolveTerrainCollisions(getCollisionPoints(collisions), millis);
             } else {
-                Shape shape = them.getShape(millis);
                 throw new RuntimeException("Cannot resolve non-Rectangle collision.");
             }
         }
