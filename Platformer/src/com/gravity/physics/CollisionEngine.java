@@ -60,15 +60,16 @@ public class CollisionEngine {
                 for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
                     c.getKey().handleCollisions(increment, c.getValue());
                 }
-                for (int tries = 0; tries < 3; tries++) {
-                    collisions = computeCollisions(increment);
+                collisions = computeCollisions(increment);
+                for (int tries = 0; !collisions.isEmpty() && tries < 3; tries++) {
                     if (!collisions.isEmpty()) {
                         for (Entry<Entity, List<Collision>> c : collisions.entrySet()) {
                             c.getKey().rehandleCollisions(increment, c.getValue());
                         }
                     }
+                    collisions = computeCollisions(increment);
                 }
-                if (!computeCollisions(increment).isEmpty()) {
+                if (!collisions.isEmpty()) {
                     throw new RuntimeException("Could not properly rehandle collisions after 3 rehandles!");
                 }
             }
