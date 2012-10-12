@@ -30,24 +30,27 @@ public class MainMenuState extends BasicGameState {
     
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-        g.drawString("The Platformers [MainMenu]", 50, 100);
+        g.drawString("Psychic Psycho Bunnies [MainMenu]", 50, 100);
         g.draw(startGame = new Rectangle(48, 148, 200, 48));
         g.draw(credits = new Rectangle(48, 198, 200, 48));
         g.drawString("Start!", 50, 150);
         g.drawString("Credits", 50, 200);
         //@formatter:off
         g.drawString("Instructions:\n" +
-        		"You and a partner control pink and yellow bunnies\n" +
+                "Your pink and yellow bunnies have gotten themselves stuck in\n" +
+                "another one of their psychic psycho experiments! Now they need\n" +
+                "your help to get out!\n" +
+                "\n" +
+        		"You and a partner can use their psychic powers to give them directions\n" +
         		"\n" +
-        		"Pink bunny starts with 'a' left, 'd' right, 'w' jump\n" +
-        		"Yellow bunny starts with arrow keys\n" +
+        		"Pink bunny moves with 'a' left, 'd' right, 'w' jump\n" +
+        		"Yellow bunny moves with the arrow keys\n" +
         		"\n" +
-        		"Get to the end of the level without falling off\n" +
-        		"the left side!\n" +
+        		"Get to the end of the level without falling off the left side!\n" +
         		"\n" +
         		"Be careful though - there are spikes in this world,\n" +
-        		"and they may make the bunnies confused enough to take\n" +
-        		"orders from your partner and not you!", 350, 150);
+        		"and they may make the bunnies confused enough to start listening\n" +
+        		"to the directions of the other player!", 350, 150);
         //@formatter:on
     }
     

@@ -12,7 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class PlatformerGame extends StateBasedGame {
     
     public PlatformerGame() {
-        super("The Platformers v0.0");
+        super("Psychic Psycho Bunnies v1.0");
     }
     
     @Override
