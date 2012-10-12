@@ -7,6 +7,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -39,6 +40,13 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private GameContainer container;
     private StateBasedGame game;
     private final Random rand = new Random();
+    
+    private boolean leftRemapped, rightRemapped, jumpRemapped;
+    private Color lightPink = Color.pink.brighter();
+    private Color lightYellow = new Color(1, 1, 0.5f);
+    private Control remappedControl;
+    private float remappedDecay;
+    private Polygon controlArrow = new Polygon(new float[] { -50, 10, 20, 10, -10, 50, 10, 50, 50, 0, 10, -50, -10, -50, 20, -10, -50, -10 });
     
     private float offsetX; // Current offset x... should be negative
     private float offsetY; // Current offset y
@@ -73,16 +81,51 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         offsetY = 0;
         maxOffsetX = (map.getWidth() - container.getWidth()) * -1;
         totalTime = 0;
+        leftRemapped = false;
+        jumpRemapped = false;
+        rightRemapped = false;
     }
     
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-        // TODO call the render stack
         rendererMap.render(g, (int) offsetX, (int) offsetY);
+        
+        if (remappedDecay > 0) {
+            g.pushTransform();
+            g.translate(512, 384);
+            g.scale(6 * remappedDecay, 6 * remappedDecay);
+            switch (remappedControl) {
+                case JUMP:
+                    g.rotate(0, 0, 270);
+                    if (jumpRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    break;
+                case LEFT:
+                    if (leftRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    g.rotate(0, 0, 180);
+                    break;
+                case RIGHT:
+                    if (rightRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            g.fill(controlArrow);
+            g.resetTransform();
+            g.popTransform();
+        }
+        
         rendererB.render(g, (int) offsetX, (int) offsetY);
         rendererA.render(g, (int) offsetX, (int) offsetY);
+        
         g.pushTransform();
         g.translate(32, 32);
+        g.setColor(lightPink);
         g.fillRoundRect(0, 0, 320, 64, 10);
         renderControls(g, "Pink", controllerA);
         g.resetTransform();
@@ -90,6 +133,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         
         g.pushTransform();
         g.translate(672, 32);
+        g.setColor(lightYellow);
         g.fillRoundRect(0, 0, 320, 64, 10);
         renderControls(g, "Yellow", controllerB);
         g.resetTransform();
@@ -97,6 +141,16 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     }
     
     public void renderControls(Graphics g, String playername, PlayerKeyboardController controller) {
+        g.setColor(Color.red);
+        if (jumpRemapped) {
+            g.fillRoundRect(120, 12, 80, 16, 3);
+        }
+        if (leftRemapped) {
+            g.fillRoundRect(50, 36, 80, 16, 3);
+        }
+        if (rightRemapped) {
+            g.fillRoundRect(190, 36, 80, 12, 3);
+        }
         g.setColor(Color.black);
         g.drawString(playername, 12, 12);
         g.drawString("Jump: " + Input.getKeyName(controller.getJump()), 120, 12);
@@ -126,6 +180,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         // Prevent player from going off right side
         checkRightSide(playerA, offsetX);
         checkRightSide(playerB, offsetX);
+        remappedDecay -= delta / 1000f;
     }
     
     private float getOffsetXDelta() {
@@ -177,6 +232,21 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         bkey = controllerB.getControl(ctrl);
         controllerA.setControl(ctrl, bkey);
         controllerB.setControl(ctrl, akey);
+        switch (ctrl) {
+            case JUMP:
+                jumpRemapped = !jumpRemapped;
+                break;
+            case LEFT:
+                leftRemapped = !leftRemapped;
+                break;
+            case RIGHT:
+                rightRemapped = !rightRemapped;
+                break;
+            default:
+                break;
+        }
+        remappedControl = ctrl;
+        remappedDecay = 1;
     }
     
     @Override
