@@ -58,18 +58,16 @@ public class TileWorld implements GameWorld {
             }
         }
         
-        if (map.getLayerCount() > SPIKES_LAYER_ID) {
-            layerId = SPIKES_LAYER_ID;
-            for (int i = 0; i < map.getWidth(); i++) {
-                for (int j = 0; j < map.getHeight(); j++) {
-                    int tileId = map.getTileId(i, j, layerId);
-                    if (tileId != 0) {
-                        // Tile exists at this spot
-                        Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
-                        Entity e = new SpikeEntity(controller, r);
-                        
-                        entityCallColls.add(e);
-                    }
+        layerId = SPIKES_LAYER_ID;
+        for (int i = 0; i < map.getWidth(); i++) {
+            for (int j = 0; j < map.getHeight(); j++) {
+                int tileId = map.getTileId(i, j, layerId);
+                if (tileId != 0) {
+                    // Tile exists at this spot
+                    Rectangle r = new Rectangle(i * tileWidth, j * tileHeight, tileWidth, tileHeight);
+                    Entity e = new SpikeEntity(controller, r);
+                    
+                    entityCallColls.add(e);
                 }
             }
         }
