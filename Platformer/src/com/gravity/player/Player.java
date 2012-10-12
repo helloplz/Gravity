@@ -205,8 +205,7 @@ public class Player implements Entity {
         switch (count) {
             case 0:
                 // No collisions
-                System.out.println("handleCollisions should NOT be called with empty collision list");
-                break;
+                throw new RuntimeException("handleCollisions should NOT be called with empty collision list");
             case 1:
                 // If you only hit one corner, we will cancel velocity in the direction of the corner
                 // Origin is in the top left
