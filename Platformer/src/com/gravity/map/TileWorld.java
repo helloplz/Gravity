@@ -2,7 +2,6 @@ package com.gravity.map;
 
 import java.util.List;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -112,15 +111,10 @@ public class TileWorld implements GameWorld {
     
     @Override
     public void render(Graphics g, int offsetX, int offsetY) {
-        g.pushTransform();
-        g.translate(offsetX, offsetY);
-        g.setColor(Color.red);
-        for (Entity e : entityNoCalls) {
-            g.draw(e.getShape(0));
-        }
-        g.setColor(Color.white);
-        g.resetTransform();
-        g.popTransform();
+        /*
+         * // if we need to draw hitboxes again: g.pushTransform(); g.translate(offsetX, offsetY); g.setColor(Color.red); for (Entity e :
+         * entityNoCalls) { g.draw(e.getShape(0)); } g.setColor(Color.white); g.resetTransform(); g.popTransform();
+         */
         map.render(offsetX, offsetY);
     }
     
