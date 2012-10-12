@@ -23,14 +23,14 @@ import com.gravity.player.PlayerKeyboardController.Control;
 import com.gravity.player.PlayerRenderer;
 
 public class GameplayState extends BasicGameState implements GravityGameController {
-
+    
     static final int ID = 1;
-
+    
     @Override
     public int getID() {
         return ID;
     }
-
+    
     private TileWorld map;
     private Player playerA, playerB;
     private TileWorldRenderer rendererMap;
@@ -40,21 +40,22 @@ public class GameplayState extends BasicGameState implements GravityGameControll
     private GameContainer container;
     private StateBasedGame game;
     private final Random rand = new Random();
-
+    private boolean oddStart = true;
+    
     private boolean leftRemapped, rightRemapped, jumpRemapped;
     private Color lightPink = Color.pink.brighter();
     private Color lightYellow = new Color(1, 1, 0.5f);
     private Control remappedControl;
     private float remappedDecay;
     private Polygon controlArrow = new Polygon(new float[] { -50, 10, 20, 10, -10, 50, 10, 50, 50, 0, 10, -50, -10, -50, 20, -10, -50, -10 });
-
+    
     private float offsetX; // Current offset x... should be negative
     private float offsetY; // Current offset y
     private float maxOffsetX; // Maximum offset x can ever be
     private int totalTime; // Time since start
-
-    private static final int WIN_MARGIN = 850;
-
+    
+    private static final int WIN_MARGIN = 950;
+    
     @Override
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         this.container = container;
@@ -62,10 +63,14 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         resetState();
         GameSounds.playBGM();
     }
-
+    
     public void resetState() throws SlickException {
-
-        map = new TileWorld(new TiledMap("assets/game_map_final.tmx"), this);
+        if (oddStart) {
+            map = new TileWorld(new TiledMap("assets/game_map_final.tmx"), this);
+        } else {
+            map = new TileWorld(new TiledMap("assets/level2.tmx"), this);
+        }
+        oddStart = !oddStart;
         playerA = new Player(map, "pink", new Vector2f(256, 512));
         playerB = new Player(map, "yellow", new Vector2f(224, 512));
         rendererMap = new TileWorldRenderer(map);
@@ -85,44 +90,44 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         jumpRemapped = false;
         rightRemapped = false;
     }
-
+    
     @Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         rendererMap.render(g, (int) offsetX, (int) offsetY);
-
+        
         if (remappedDecay > 0) {
             g.pushTransform();
             g.translate(512, 384);
             g.scale(6 * remappedDecay, 6 * remappedDecay);
             switch (remappedControl) {
-            case JUMP:
-                g.rotate(0, 0, 270);
-                if (jumpRemapped) {
-                    g.setColor(Color.red);
-                }
-                break;
-            case LEFT:
-                if (leftRemapped) {
-                    g.setColor(Color.red);
-                }
-                g.rotate(0, 0, 180);
-                break;
-            case RIGHT:
-                if (rightRemapped) {
-                    g.setColor(Color.red);
-                }
-                break;
-            default:
-                break;
+                case JUMP:
+                    g.rotate(0, 0, 270);
+                    if (jumpRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    break;
+                case LEFT:
+                    if (leftRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    g.rotate(0, 0, 180);
+                    break;
+                case RIGHT:
+                    if (rightRemapped) {
+                        g.setColor(Color.red);
+                    }
+                    break;
+                default:
+                    break;
             }
             g.fill(controlArrow);
             g.resetTransform();
             g.popTransform();
         }
-
+        
         rendererB.render(g, (int) offsetX, (int) offsetY);
         rendererA.render(g, (int) offsetX, (int) offsetY);
-
+        
         g.pushTransform();
         g.translate(32, 32);
         g.setColor(lightPink);
@@ -130,7 +135,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         renderControls(g, "Pink", controllerA);
         g.resetTransform();
         g.popTransform();
-
+        
         g.pushTransform();
         g.translate(672, 32);
         g.setColor(lightYellow);
@@ -139,7 +144,7 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         g.resetTransform();
         g.popTransform();
     }
-
+    
     public void renderControls(Graphics g, String playername, PlayerKeyboardController controller) {
         g.setColor(Color.red);
         if (jumpRemapped) {
@@ -158,71 +163,71 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         g.drawString("Right: " + Input.getKeyName(controller.getRight()), 190, 36);
         g.setColor(Color.white);
     }
-
+    
     @Override
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
         totalTime += delta;
         collider.update(delta);
         offsetX -= delta * getOffsetXDelta();
         offsetX = Math.max(offsetX, maxOffsetX);
-
+        
         if (checkWin(playerA) || checkWin(playerB)) {
             game.enterState(GameWinState.ID);
             return;
         }
-
+        
         // Tell player when to die if off the screen
         checkDeath(playerA, offsetX);
         checkDeath(playerB, offsetX);
-
+        
         // Prevent player from going off right side
         checkRightSide(playerA, offsetX);
         checkRightSide(playerB, offsetX);
         remappedDecay -= delta / 1000f;
     }
-
+    
     private float getOffsetXDelta() {
         if (totalTime < 1000) {
             return 0;
         }
         return 0.035f; // + (float) (totalTime - 1000) / (1000 * 1000);
     }
-
+    
     private boolean checkWin(Player player) {
         return (player.getPosition().x + maxOffsetX >= WIN_MARGIN);
     }
-
+    
     private void checkDeath(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
         if (pos.x + offsetX2 + 32 < 0) {
             playerDies(player);
         }
     }
-
+    
     private void checkRightSide(Player player, float offsetX2) {
         Vector2f pos = player.getPosition();
         player.setPositionX(Math.min(pos.x, -offsetX2 + container.getWidth() - 32));
     }
-
+    
     @Override
     public void keyPressed(int key, char c) {
         if (!controllerA.handleKeyPress(key)) {
             controllerB.handleKeyPress(key);
         }
     }
-
+    
     @Override
     public void keyReleased(int key, char c) {
         if (!controllerA.handleKeyRelease(key)) {
             controllerB.handleKeyRelease(key);
         }
     }
-
+    
     @Override
     public void playerDies(Player player) {
         game.enterState(GameOverState.ID);
     }
-
+    
     @Override
     public void swapPlayerControls(Control ctrl) {
         int akey, bkey;
@@ -231,22 +236,22 @@ public class GameplayState extends BasicGameState implements GravityGameControll
         controllerA.setControl(ctrl, bkey);
         controllerB.setControl(ctrl, akey);
         switch (ctrl) {
-        case JUMP:
-            jumpRemapped = !jumpRemapped;
-            break;
-        case LEFT:
-            leftRemapped = !leftRemapped;
-            break;
-        case RIGHT:
-            rightRemapped = !rightRemapped;
-            break;
-        default:
-            break;
+            case JUMP:
+                jumpRemapped = !jumpRemapped;
+                break;
+            case LEFT:
+                leftRemapped = !leftRemapped;
+                break;
+            case RIGHT:
+                rightRemapped = !rightRemapped;
+                break;
+            default:
+                break;
         }
         remappedControl = ctrl;
         remappedDecay = 1;
     }
-
+    
     @Override
     public void playerHitSpikes(Player player) {
         swapPlayerControls(Control.getById(rand.nextInt(Control.size())));
