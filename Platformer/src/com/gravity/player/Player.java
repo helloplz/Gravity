@@ -33,7 +33,7 @@ public class Player implements Entity {
     private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 100f;
     private final float VEL_DAMP = 0.5f;
-    private final float GRAVITY = 1.0f / 500f;
+    private final float GRAVITY = 1.0f / 1000f;
     
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
     
@@ -299,15 +299,16 @@ public class Player implements Entity {
         updatePosition(millis);
         updateAcceleration(millis);
         updateVelocity(millis);
-        List<Shape> collisions = map.getTouching(myShape);
+        Shape hitbox = myShape.transform(Transform.createTranslateTransform(0, 5));
+        List<Shape> collisions = map.getTouching(hitbox);
         onGround = false;
         for (Shape e : collisions) {
             Map<Integer, List<Integer>> aCollisions = Maps.newHashMap(), bCollisions = Maps.newHashMap();
-            CollisionEngine.getShapeIntersections(myShape, e, aCollisions, bCollisions);
+            CollisionEngine.getShapeIntersections(hitbox, e, aCollisions, bCollisions);
             Set<Integer> aPoints = Sets.newHashSet();
             Set<Integer> bPoints = Sets.newHashSet();
-            CollisionEngine.getIntersectPoints(myShape, e, aCollisions, aPoints, bPoints);
-            CollisionEngine.getIntersectPoints(e, myShape, bCollisions, bPoints, aPoints);
+            CollisionEngine.getIntersectPoints(hitbox, e, aCollisions, aPoints, bPoints);
+            CollisionEngine.getIntersectPoints(e, hitbox, bCollisions, bPoints, aPoints);
             if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)) {
                 onGround = true;
                 break;
