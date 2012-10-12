@@ -91,6 +91,11 @@ public class TileWorld implements GameWorld {
                 touches.add(terrain.getShape(0));
             }
         }
+        for (Entity terrain : entityCallColls) {
+            if (shape.intersects(terrain.getShape(0))) {
+                touches.add(terrain.getShape(0));
+            }
+        }
         return touches;
     }
     

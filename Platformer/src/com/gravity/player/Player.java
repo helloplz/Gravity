@@ -11,7 +11,6 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.gravity.gameplay.GravityGameController;
 import com.gravity.map.GameWorld;
 import com.gravity.physics.Collision;
 import com.gravity.physics.CollisionEngine;
@@ -25,13 +24,11 @@ public class Player implements Entity {
     
     public static int TOP_LEFT = 0, TOP_RIGHT = 1, BOT_RIGHT = 2, BOT_LEFT = 3;
     
-    private GravityGameController game;
-    
     // PLAYER STARTING CONSTANTS (Units = pixels, milliseconds)
     private final float JUMP_POWER = 0.7f;
     private final float MOVEMENT_INCREMENT = 1f / 8f;
-    private final float MAX_HEALTH = 10;
     private final float MAX_VEL = 75f;
+    @SuppressWarnings("unused")
     private final float VEL_DAMP = 0.5f;
     private final float GRAVITY = 1.0f / 500f;
     private final Shape BASE_SHAPE = new Rectangle(1f, 1f, 15f, 32f);
@@ -45,19 +42,16 @@ public class Player implements Entity {
     private Vector2f acceleration = new Vector2f(0, 0);
     private Vector2f position;
     private Vector2f velocity = new Vector2f(0, 0);
-    private Vector2f facing = new Vector2f(0, 1);
-    private float health;
     private Shape myShape;
     
     // GAME STATE STUFF
     private boolean onGround = false;
     private final String name;
+    private Movement requested = Movement.STOP;
     
-    public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
-        health = MAX_HEALTH;
+    public Player(GameWorld map, String name, Vector2f startpos) {
         position = startpos;
         this.map = map;
-        this.game = game;
         this.myShape = BASE_SHAPE;
         this.name = name;
     }
@@ -264,14 +258,6 @@ public class Player implements Entity {
         }
     }
     
-    public void takeDamage(float damage) {
-        health -= damage;
-    }
-    
-    public void heal(float heal) {
-        health += heal;
-    }
-    
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////ON-TICK METHODS/////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
@@ -297,6 +283,16 @@ public class Player implements Entity {
             }
         }
         isDead(millis);
+        switch (requested) {
+            case LEFT:
+                velocity.x = -MOVEMENT_INCREMENT;
+                break;
+            case RIGHT:
+                velocity.x = MOVEMENT_INCREMENT;
+                break;
+            default:
+                // no-op
+        }
     }
     
     public void updateAcceleration(float millis) {
@@ -330,6 +326,10 @@ public class Player implements Entity {
      */
     private void updateShape() {
         myShape = BASE_SHAPE.transform(Transform.createTranslateTransform(position.x, position.y));
+    }
+    
+    public void setRequestedMovement(Movement requested) {
+        this.requested = requested;
     }
     
     /**

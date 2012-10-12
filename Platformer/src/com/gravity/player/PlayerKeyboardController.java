@@ -123,17 +123,18 @@ public class PlayerKeyboardController {
     public boolean handleKeyPress(int key) {
         if (key == left) {
             player.move(Movement.LEFT);
+            player.setRequestedMovement(Movement.LEFT);
             lefting = true;
             return true;
         } else if (key == right) {
             player.move(Movement.RIGHT);
+            player.setRequestedMovement(Movement.RIGHT);
             righting = true;
             return true;
         } else if (key == jump) {
             player.jump(true);
             GameSounds.playSickRabbitBeat();
             return true;
-            
         }
         return false;
     }
@@ -143,12 +144,14 @@ public class PlayerKeyboardController {
             lefting = false;
             if (!lefting && !righting) {
                 player.move(Movement.STOP);
+                player.setRequestedMovement(Movement.STOP);
             }
             return true;
         } else if (key == right) {
             righting = false;
             if (!lefting && !righting) {
                 player.move(Movement.STOP);
+                player.setRequestedMovement(Movement.STOP);
             }
             return true;
         } else if (key == jump) {
