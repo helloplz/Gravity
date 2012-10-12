@@ -44,7 +44,7 @@ public class Player implements Entity {
     
     // TODO: bring these back into tile widths instead of pixel widths
     private Vector2f acceleration = new Vector2f(0, 0);
-    private Vector2f position = new Vector2f(200, 512);
+    private Vector2f position;
     private Vector2f velocity = new Vector2f(0, 0);
     private Vector2f facing = new Vector2f(0, 1);
     private float health;
@@ -54,13 +54,17 @@ public class Player implements Entity {
     private boolean onGround = false;
     private final String name;
     
-    public Player(GameWorld map, GravityGameController game, String name) {
+    public Player(GameWorld map, GravityGameController game, String name, Vector2f startpos) {
         health = MAX_HEALTH;
-        velocity = new Vector2f(0, 0);
+        position = startpos;
         this.map = map;
         this.game = game;
         this.myShape = BASE_SHAPE;
         this.name = name;
+    }
+    
+    public String getName() {
+        return name;
     }
     
     @Override
