@@ -31,5 +31,5 @@ public interface GameWorld extends Renderer {
     public List<Entity> getTerrainEntitiesCallColls();
     
     /** Returns a list of entities which this shape is touching (within a certain number of pixels of) */
-    List<Shape> getTouching(Shape shape);
+    List<Entity> getTouching(Shape shape);
 }

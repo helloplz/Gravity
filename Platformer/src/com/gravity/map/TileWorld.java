@@ -84,16 +84,16 @@ public class TileWorld implements GameWorld {
     }
     
     @Override
-    public List<Shape> getTouching(Shape shape) {
-        List<Shape> touches = Lists.newArrayList();
+    public List<Entity> getTouching(Shape shape) {
+        List<Entity> touches = Lists.newArrayList();
         for (Entity terrain : entityNoCalls) {
             if (shape.intersects(terrain.getShape(0))) {
-                touches.add(terrain.getShape(0));
+                touches.add(terrain);
             }
         }
         for (Entity terrain : entityCallColls) {
             if (shape.intersects(terrain.getShape(0))) {
-                touches.add(terrain.getShape(0));
+                touches.add(terrain);
             }
         }
         return touches;

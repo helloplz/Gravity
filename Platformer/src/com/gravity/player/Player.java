@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.gravity.map.GameWorld;
@@ -267,20 +268,23 @@ public class Player implements Entity {
         updateAcceleration(millis);
         updateVelocity(millis);
         Shape hitbox = myShape.transform(Transform.createTranslateTransform(0, 5));
-        List<Shape> collisions = map.getTouching(hitbox);
+        List<Entity> collisions = map.getTouching(hitbox);
         onGround = false;
-        for (Shape e : collisions) {
+        for (Entity ent : collisions) {
             Map<Integer, List<Integer>> aCollisions = Maps.newHashMap(), bCollisions = Maps.newHashMap();
+            Shape e = ent.getShape(0);
             CollisionEngine.getShapeIntersections(hitbox, e, aCollisions, bCollisions);
             Set<Integer> aPoints = Sets.newHashSet();
             Set<Integer> bPoints = Sets.newHashSet();
             CollisionEngine.getIntersectPoints(hitbox, e, aCollisions, aPoints, bPoints);
             CollisionEngine.getIntersectPoints(e, hitbox, bCollisions, bPoints, aPoints);
-            if (aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)
+            if (!onGround && aPoints.contains(BOT_LEFT) && aPoints.contains(BOT_RIGHT)
                     || (aPoints.size() == 1 && (aPoints.contains(BOT_LEFT) || aPoints.contains(BOT_RIGHT)))) {
                 onGround = true;
-                break;
             }
+            
+            // terrain doesn't move so this is safe to be called. necessary for detecting when running over spikes
+            ent.handleCollisions(millis, Lists.newArrayList(new Collision(ent, this, millis, bPoints, aPoints)));
         }
         isDead(millis);
         switch (requested) {
