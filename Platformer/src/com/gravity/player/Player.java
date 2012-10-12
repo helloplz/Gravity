@@ -190,8 +190,6 @@ public class Player implements Entity {
      * Handles collision with terrain
      */
     private void resolveTerrainCollisions(Entity[] points, int millis) {
-        System.out.println("old position = " + position.x + ", " + position.y);
-        
         Entity etl = points[0];
         Entity etr = points[1];
         Entity ebr = points[2];
@@ -216,135 +214,56 @@ public class Player implements Entity {
                 throw new RuntimeException("handleCollisions should NOT be called with empty collision list");
             case 1:
                 // If you only hit one corner, we will cancel velocity in the direction of the corner
-                // Origin is in the top left
                 if (tl) {
-                    // If moving left
-                    if (velocity.x < 0) {
-                        
-                        // position.x -= velocity.copy().scale(millis).x;
-                        velocity.x = 0;
-                    }
-                    // If moving up
-                    if (velocity.y < 0) {
-                        
-                        // position.y -= velocity.copy().scale(millis).y;
-                        velocity.y = 0;
-                    }
+                    // Hit top left
+                    velocity.x = Math.max(velocity.x, 0);
+                    velocity.y = Math.max(velocity.y, 0);
                 } else if (tr) {
-                    // If moving right
-                    if (velocity.x > 0) {
-                        
-                        // position.x -= velocity.copy().scale(millis).x;
-                        velocity.x = 0;
-                    }
-                    // If moving up
-                    if (velocity.y < 0) {
-                        
-                        // position.y -= velocity.copy().scale(millis).y;
-                        velocity.y = 0;
-                    }
+                    // Hit top right
+                    velocity.x = Math.min(velocity.x, 0);
+                    velocity.y = Math.max(velocity.y, 0);
                 } else if (br) {
-                    // If moving right
-                    if (velocity.x > 0) {
-                        
-                        // position.x -= velocity.copy().scale(millis).x;
-                        velocity.x = 0;
-                    }
-                    // If moving down
-                    if (velocity.y > 0) {
-                        
-                        // position.y -= velocity.copy().scale(millis).y;
-                        velocity.y = 0;
-                    }
+                    // Hit bottom right
+                    velocity.x = Math.min(velocity.x, 0);
+                    velocity.y = Math.min(velocity.y, 0);
                 } else if (bl) {
-                    // If moving left
-                    if (velocity.x < 0) {
-                        // position.x -= velocity.copy().scale(millis).x;
-                        velocity.x = 0;
-                    }
-                    // If moving down
-                    if (velocity.y > 0) {
-                        
-                        // position.y -= velocity.copy().scale(millis).y;
-                        velocity.y = 0;
-                    }
+                    // Hit bottom left
+                    velocity.x = Math.max(velocity.x, 0);
+                    velocity.y = Math.min(velocity.y, 0);
                 } else {
                     throw new RuntimeException("Should never hit this line: case 1");
                 }
                 break;
             case 2:
-                // if you hit the ceiling
                 if (tl && tr) {
-                    
-                    // position.y -= velocity.copy().scale(millis).y;
+                    // if you hit the ceiling
                     velocity.y = 0;
                     onGround = false;
-                }
-                // if you hit the floor
-                else if (bl && br) {
-                    
+                } else if (bl && br) {
+                    // if you hit the floor
                     velocity.y = 0;
-                    // position.y -= velocity.copy().scale(millis).y;
                     onGround = true;
-                }
-                // if you hit the right wall
-                else if (tr && br) {
-                    
+                } else if (tr && br) {
+                    // if you hit the right wall
                     velocity.x = 0;
-                    // position.x -= velocity.copy().scale(millis).x;
-                }
-                // if you hit the left wall
-                else if (tl && bl) {
+                } else if (tl && bl) {
+                    // if you hit the left wall
                     velocity.x = 0;
-                    // position.x -= velocity.copy().scale(millis).x;
-                }
-                // if you hit opposite corners
-                else {
-                    System.out.println("check opening size!!!");
-                    position.sub(velocity.copy().scale(millis));
-                    
+                } else {
+                    // if you hit opposite corners
+                    if ((points[0] == points[2] && points[0] != null) || (points[1] == points[3] && points[1] != null)) {
+                        System.out.println("check opening size!!!");
+                    }
                     velocity.x = 0;
                     velocity.y = 0;
                 }
                 break;
             default:
                 // Collision on 2 or more sides
-                // position.sub(velocity.copy().scale(millis));
                 velocity.x = 0;
                 velocity.y = 0;
                 break;
         }
-        updateShape();
-        System.out.println("new position = " + position.x + ", " + position.y);
-        
-    }
-    
-    /**
-     * @param me
-     * @param them
-     * @param ticks
-     * @return the overlap (always positive)
-     */
-    private float getXOverlap(Entity me, Entity them, int ticks) {
-        float difX = them.getShape(ticks).getCenterX() - (position.x + velocity.copy().scale(ticks).x);
-        System.out.println("difX = " + difX);
-        float result = Math.abs(difX - ((myShape.getWidth() + them.getShape(ticks).getWidth()) / 2));
-        System.out.println("x overlap = " + result);
-        return result;
-    }
-    
-    /**
-     * @param me
-     * @param them
-     * @param ticks
-     * @return the overlap (always positive)
-     */
-    private float getYOverlap(Entity me, Entity them, int ticks) {
-        float difY = them.getShape(ticks).getCenterY() - (position.y + velocity.copy().scale(ticks).y);
-        System.out.println("difY = " + difY);
-        float result = Math.abs(difY - ((myShape.getHeight() + them.getShape(ticks).getHeight()) / 2));
-        System.out.println("y overlap = " + result);
-        return result;
     }
     
     public void takeDamage(float damage) {
