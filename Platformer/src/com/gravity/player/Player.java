@@ -144,7 +144,6 @@ public class Player implements Entity {
      *            true if keydown, false if keyup
      */
     public void specialKey(boolean pressed) {
-        System.out.println("special key pressed");
         if (pressed) {
             slingshot = true;
         } else {
